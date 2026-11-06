@@ -408,6 +408,13 @@
   <div class="mbody" id="c-body"></div>
   <div class="mfoot"><button class="btn" id="c-cancel">Retour</button><button class="btn primary" id="c-ok">Continuer</button></div>
 </div></div>
+<div class="modal hide top" id="m-upd"><div class="mbox narrow">
+  <div class="mhead"><h3 id="mu-title">Nouvelle version disponible</h3></div>
+  <div class="mbody"><div id="mu-body"></div>
+    <label class="chk" style="margin-top:14px"><input type="checkbox" id="mu-never"> Ne plus afficher cette fenêtre</label>
+    <div class="hint" style="margin-left:24px">Le bandeau jaune en haut de la page continuera de signaler les mises à jour.</div></div>
+  <div class="mfoot"><button class="btn" id="mu-later">Plus tard</button><button class="btn primary" id="mu-go">Mettre à jour</button></div>
+</div></div>
 <div class="modal hide" id="m-done"><div class="mbox narrow">
   <div class="mhead"><h3 id="d-title">✓ Couverture créée</h3><button class="xbtn" id="d-x" title="Fermer">✕</button></div>
   <div class="mbody" id="d-body"></div>
@@ -693,7 +700,32 @@ $("upd-check").onclick = async e => {
     }
   }
 };
-function updInitialCheck(){ let n = 0; const go = async () => { const u = await api("/api/update/status", {}); if (u.state === "available") return updRender(u); if (++n < 6 && ["idle", "checking"].includes(u.state)) setTimeout(go, 1500); }; setTimeout(go, 3000); }
+let updPopupShown = false;
+function updPopup(u){
+  if (updPopupShown || boot.settings.update_popup === false || document.querySelector(".modal:not(.hide)")) return;
+  updPopupShown = true;
+  const n = (u.notes || "").trim();
+  $("mu-title").textContent = "Nouvelle version " + u.latest.version + " disponible";
+  $("mu-body").innerHTML = `<div>Tu as la version ${esc(u.version)}. Installer la ${esc(u.latest.version)} maintenant ?</div>`
+    + (n ? `<div class="hint" style="margin-top:8px;white-space:pre-line">${esc(n)}</div>` : "")
+    + `<div class="hint" style="margin-top:8px">Ton travail en cours est sauvegardé automatiquement ; le programme se relance tout seul.</div>`;
+  $("mu-never").checked = false; show("m-upd");
+}
+function updPopupClose(go){
+  if ($("mu-never").checked) { boot.settings.update_popup = false; api("/api/settings", {update_popup: false}).catch(() => {}); }
+  hide("m-upd"); if (go) updStart();
+}
+$("mu-later").onclick = () => updPopupClose(false);
+$("mu-go").onclick = () => updPopupClose(true);
+function updInitialCheck(){
+  let n = 0;
+  const go = async () => {
+    const u = await api("/api/update/status", {});
+    if (u.state === "available") { updRender(u); return updPopup(u); }
+    if (++n < 16 && ["idle", "checking"].includes(u.state)) setTimeout(go, 1500);
+  };
+  setTimeout(go, 3000);
+}
 
 // ---- édition directe par double-clic sur l'aperçu
 function closeEditor(){
@@ -1273,7 +1305,7 @@ document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (!$("ed").classList.contains("hide")) { closeEditor(); return; }
   if (!$("m-confirm").classList.contains("hide")) { $("c-cancel").click(); return; }
-  for (const id of ["m-done", "m-view", "m-lib", "m-batch"]) if (!$(id).classList.contains("hide")) { $({"m-done": "d-x", "m-view": "mv-x", "m-lib": "ml-x", "m-batch": "mb-x"}[id]).click(); return; }
+  for (const id of ["m-upd", "m-done", "m-view", "m-lib", "m-batch"]) if (!$(id).classList.contains("hide")) { $({"m-upd": "mu-later", "m-done": "d-x", "m-view": "mv-x", "m-lib": "ml-x", "m-batch": "mb-x"}[id]).click(); return; }
 });
 
 // ---------------------------------------------------------------- démarrage

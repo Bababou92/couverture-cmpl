@@ -56,12 +56,13 @@ def load_settings():
         data = {}
     data.setdefault("custom_colors", [])
     data.setdefault("custom_collections", [])
+    data.setdefault("update_popup", True)
     data.setdefault("out_dir", os.path.join(os.path.expanduser("~"), "Documents", "Couvertures CMPL"))
     return data
 
 
 def save_settings(data):
-    keep = {k: data.get(k) for k in ("custom_colors", "custom_collections", "out_dir")}
+    keep = {k: data.get(k) for k in ("custom_colors", "custom_collections", "out_dir", "update_popup")}
     with open(settings_path(), "w", encoding="utf8") as fh:
         json.dump(keep, fh, ensure_ascii=False, indent=1)
 
@@ -719,7 +720,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"params": p if draft_meaningful(p) else None})
             if path == "/api/settings":
                 s = load_settings()
-                s.update({k: body[k] for k in ("custom_colors", "custom_collections", "out_dir") if k in body})
+                s.update({k: body[k] for k in ("custom_colors", "custom_collections", "out_dir", "update_popup") if k in body})
                 save_settings(s)
                 return self._send(200, {"ok": True})
             if path == "/api/browse":

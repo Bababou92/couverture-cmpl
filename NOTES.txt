@@ -1,2 +1,2 @@
+Fenêtre de proposition de mise à jour au lancement (avec case « Ne plus afficher »).
 Dos en petites capitales, notion de fonds perdus retirée.
-Mise à jour automatique : le programme propose lui-même les nouvelles versions.
