@@ -76,12 +76,22 @@ jobs:
           json.dump(data, open("dist/latest.json", "w", encoding="utf8"), ensure_ascii=False, indent=2)
           print(json.dumps(data, ensure_ascii=False, indent=2))
 
-      - name: Créer la release
+      - name: Publier dans Releases
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          $tag = $env:GITHUB_REF_NAME
           $notes = "Nouveautés"
           if (Test-Path NOTES.txt) { $notes = Get-Content NOTES.txt -Raw -Encoding utf8 }
-          gh release create "$env:GITHUB_REF_NAME" "dist/Couvertures-CMPL.exe" "dist/latest.json" `
-            --title "Couvertures CMPL $($env:GITHUB_REF_NAME.TrimStart('v'))" --notes "$notes"
+          $titre = "Couvertures CMPL $($tag.TrimStart('v'))"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            # release déjà créée depuis le site GitHub : on y ajoute les fichiers
+            gh release upload $tag "dist/Couvertures-CMPL.exe" "dist/latest.json" --clobber
+            if ($LASTEXITCODE -ne 0) { throw "Envoi des fichiers impossible" }
+            gh release edit $tag --title "$titre" --notes "$notes"
+          } else {
+            gh release create $tag "dist/Couvertures-CMPL.exe" "dist/latest.json" --title "$titre" --notes "$notes"
+            if ($LASTEXITCODE -ne 0) { throw "Création de la release impossible" }
+          }

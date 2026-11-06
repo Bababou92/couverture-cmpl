@@ -10,7 +10,8 @@ CMPL Éditeur : 1re, 4e de couverture et dos, en images PNG, PowerPoint modifiab
 ## Publier une nouvelle version
 
 1. Modifier `NOTES.txt` (une ou deux lignes sur les nouveautés).
-2. `git tag v1.1.0 && git push origin v1.1.0`
+2. Sur GitHub : *Releases* → *Draft a new release* → créer le tag `v1.1.0` → *Publish release*
+   (ou en ligne de commande : `git tag v1.1.0 && git push origin v1.1.0`)
 3. GitHub Actions construit l'exe sur Windows, le teste, puis le publie dans *Releases* avec `latest.json`.
    Les PC qui ont le programme verront « Nouvelle version disponible » au prochain lancement.
 
