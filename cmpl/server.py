@@ -133,7 +133,7 @@ def _png_b64(img):
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 
-def preview(params, dpi=100, bleed=3.0, only_front=False, only=None):
+def preview(params, dpi=100, bleed=0.0, only_front=False, only=None):
     p, pages, notes = build(params)
     if only_front:
         only = 0
@@ -159,7 +159,7 @@ def preview(params, dpi=100, bleed=3.0, only_front=False, only=None):
     d.rectangle([tx * k, ty * k, (tx + tw) * k, (ty + th) * k], outline=(0, 170, 255), width=1)
     for fx in info["folds"]:
         d.line([fx * k, 0, fx * k, fimg.height], fill=(255, 0, 170), width=1)
-    faces.append({"name": f"À plat · fonds perdus {bleed:g} mm", "w": fimg.width, "h": fimg.height,
+    faces.append({"name": ("À plat" if not bleed else f"À plat · fonds perdus {bleed:g} mm"), "w": fimg.width, "h": fimg.height,
                   "png": _png_b64(fimg)})
     return {"faces": faces, "warnings": warnings_for(p, notes), "hot": hot, "texts": texts}
 
@@ -175,7 +175,7 @@ def safe_name(text):
     return text[:80] or "Couverture"
 
 
-def generate(params, out_dir, name, want_png=True, want_pptx=True, dpi=300, want_pdf=False, bleed=3.0,
+def generate(params, out_dir, name, want_png=True, want_pptx=True, dpi=300, want_pdf=False, bleed=0.0,
              marks=False):
     p, pages, _notes = build(params)
     out_dir = os.path.abspath(os.path.expanduser(out_dir))
@@ -338,7 +338,7 @@ def _run_batch(job_id, lines, opts):
         try:
             files = generate(job["_params"][line], info["path"], r["name"], opts.get("png", True),
                              opts.get("pptx", True), int(opts.get("dpi", 300)), opts.get("pdf", False),
-                             opts.get("bleed", 3), opts.get("marks", False))
+                             opts.get("bleed", 0), opts.get("marks", False))
             job["run_results"].append({"line": line, "name": r["name"], "ok": True, "files": len(files),
                                        "folder": info["folder"], "path": info["path"]})
         except Exception as e:
@@ -631,7 +631,7 @@ class Handler(BaseHTTPRequestHandler):
                                         "thumb": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()})
             body = self._json()
             if path == "/api/preview":
-                return self._send(200, preview(body["params"], int(body.get("dpi", 100)), body.get("bleed", 3),
+                return self._send(200, preview(body["params"], int(body.get("dpi", 100)), body.get("bleed", 0),
                                                bool(body.get("only_front")), body.get("only")))
             if path == "/api/generate":
                 p0 = defaults.normalize(body["params"])
@@ -639,7 +639,7 @@ class Handler(BaseHTTPRequestHandler):
                 folder = os.path.join(os.path.abspath(os.path.expanduser(body["out_dir"])), base)   # un dossier par livre
                 files = generate(body["params"], folder, base, body.get("png", True),
                                  body.get("pptx", True), int(body.get("dpi", 300)), body.get("pdf", False),
-                                 body.get("bleed", 3), body.get("marks", False))
+                                 body.get("bleed", 0), body.get("marks", False))
                 s = load_settings()
                 s["out_dir"] = body["out_dir"]
                 save_settings(s)
@@ -682,7 +682,7 @@ class Handler(BaseHTTPRequestHandler):
                 p = job and job["_params"].get(int(body.get("line", 0)))
                 if not p:
                     return self._send(404, {"error": "livre inconnu"})
-                return self._send(200, preview(p, 100, body.get("bleed", 3)))
+                return self._send(200, preview(p, 100, body.get("bleed", 0)))
             if path == "/api/batch/run":
                 job = JOBS.get(body.get("job"))
                 if not job or not job["finished"]:

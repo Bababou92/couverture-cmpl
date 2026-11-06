@@ -496,12 +496,12 @@ def a_spine(p, W, H, user_imgs):
     az_mm = 0.0
     if author:
         max_a = length_avail * 0.45
-        while textfit.text_width_pt(author, "arial", asz, False, False) * MM_PER_PT + 2 * ins > max_a and asz > 6:
+        while textfit.text_width_pt(author, "arial", asz, False, False, True) * MM_PER_PT + 2 * ins > max_a and asz > 6:
             asz -= 0.5
-        az_mm = textfit.text_width_pt(author, "arial", asz, False, False) * MM_PER_PT + 2 * ins + 3
-        els.append(TextBox(x, top, e, az_mm, [_single(author, "arial", asz, WHITE, align="r")], anchor="m", rot=270,
+        az_mm = textfit.text_width_pt(author, "arial", asz, False, False, True) * MM_PER_PT + 2 * ins + 3
+        els.append(TextBox(x, top, e, az_mm, [_single(author, "arial", asz, WHITE, smallcaps=True, align="r")], anchor="m", rot=270,
                            inset=ins, name="Auteur (dos)"))
-        if textfit.text_width_pt(author, "arial", asz, False, False) * MM_PER_PT + 2 * ins > max_a + 0.01:
+        if textfit.text_width_pt(author, "arial", asz, False, False, True) * MM_PER_PT + 2 * ins > max_a + 0.01:
             note("error", "Auteur du dos : trop long pour la hauteur du dos.")
     spot("Auteur du dos", [F("dos_auteur", "Auteur du dos", author)], x, top, e, az_mm if author else 25.0 * sy,
          rot=270, family="arial", size=asz)
@@ -511,11 +511,11 @@ def a_spine(p, W, H, user_imgs):
          size=textfit.round_pt(base))
     if title:
         tsz = textfit.round_pt(base)
-        while textfit.text_width_pt(title, "arial", tsz, False, False) * MM_PER_PT + 2 * ins > t_len and tsz > 6:
+        while textfit.text_width_pt(title, "arial", tsz, False, False, True) * MM_PER_PT + 2 * ins > t_len and tsz > 6:
             tsz -= 0.5
-        els.append(TextBox(x, t_y0, e, t_len, [_single(title, "arial", tsz, WHITE, align="c")], anchor="m", rot=270,
+        els.append(TextBox(x, t_y0, e, t_len, [_single(title, "arial", tsz, WHITE, smallcaps=True, align="c")], anchor="m", rot=270,
                            inset=ins, name="Titre (dos)"))
-        if textfit.text_width_pt(title, "arial", tsz, False, False) * MM_PER_PT + 2 * ins > t_len + 0.01:
+        if textfit.text_width_pt(title, "arial", tsz, False, False, True) * MM_PER_PT + 2 * ins > t_len + 0.01:
             note("error", "Titre du dos : trop long pour la hauteur du dos (raccourcis-le dans « Titre du dos »).")
         elif tsz < 0.75 * textfit.round_pt(base):
             note("warn", f"Titre du dos : réduit à {tsz:g} pt pour tenir (raccourcis-le dans « Titre du dos »).")

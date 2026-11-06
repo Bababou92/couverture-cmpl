@@ -1,2 +1,2 @@
+Dos en petites capitales, notion de fonds perdus retirée.
 Mise à jour automatique : le programme propose lui-même les nouvelles versions.
-Charte graphique malgache, image colorée avec la couleur du livre, modification des textes par double-clic sur l'aperçu.

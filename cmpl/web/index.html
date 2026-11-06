@@ -328,11 +328,7 @@
       <div><label style="margin:0 0 4px">Qualité des PNG</label>
         <select id="dpi"><option value="150">150 dpi (léger)</option><option value="300" selected>300 dpi (impression)</option><option value="600">600 dpi (très haute)</option></select></div>
     </div>
-    <div class="row" style="margin-top:6px;align-items:end">
-      <div><label>Fonds perdus <small>(mm)</small></label><input type="number" id="bleed" min="0" max="10" step="0.5" value="3"></div>
-      <div class="radios"><label style="margin-top:22px"><input type="checkbox" id="w_marks"> Traits de coupe et de pli</label></div>
-    </div>
-    <div class="hint">Le PDF à plat assemble 4e + dos + 1re, avec fonds perdus. Le plan est visible dans l'onglet « À plat » (cyan = coupe, rose = plis du dos).</div>
+    <div class="hint">Le PDF à plat assemble 4e + dos + 1re à la taille exacte de la couverture. Il est visible dans l'onglet « À plat ».</div>
     <div style="margin-top:14px"><button class="btn primary" id="gen" style="width:100%;padding:11px">Générer les fichiers</button></div>
     <div class="hint" style="margin-top:6px">Un dossier est créé au nom du livre dans le dossier de sortie.</div>
   </section>
@@ -587,7 +583,7 @@ async function refresh(){
   const my = ++seq;
   $("faces").classList.add("busy");
   try {
-    const r = await api("/api/preview", {params: params(), dpi: 130, bleed: parseFloat($("bleed").value) || 0});
+    const r = await api("/api/preview", {params: params(), dpi: 130, bleed: 0});
     if (my !== seq) return;
     lastFaces = r.faces; ui.hot = r.hot; ui.warnings = r.warnings; ui.texts = r.texts || [];
     $("msgs").innerHTML = warningsHtml(r.warnings);
@@ -1033,7 +1029,6 @@ $("browse").onclick = async () => {
   if (r.path) { $("out_dir").value = r.path; saveSettings(); }
 };
 $("out_dir").addEventListener("change", saveSettings);
-$("bleed").addEventListener("input", schedule);
 
 let generating = false;
 async function doGenerate(){
@@ -1050,7 +1045,7 @@ async function doGenerate(){
     btns.forEach(b => b.textContent = "Génération en cours…");
     const r = await api("/api/generate", {params: params(), out_dir: $("out_dir").value, name: $("fname").value,
       png: $("w_png").checked, pptx: $("w_pptx").checked, dpi: +$("dpi").value,
-      pdf: $("w_pdf").checked, bleed: parseFloat($("bleed").value) || 0, marks: $("w_marks").checked});
+      pdf: $("w_pdf").checked, bleed: 0, marks: false});
     const sep = r.folder.includes("\\") ? "\\" : "/";
     $("d-title").textContent = "✓ Couverture créée";
     $("d-body").innerHTML = `<div class="hint" style="margin:0">Dans le dossier</div><code class="path">${esc(r.folder)}</code>
@@ -1225,13 +1220,13 @@ $("mv-x").onclick = () => hide("m-view");
 // -- étape 3 : création
 function bOpts(){
   return {out_dir: $("m_out_dir").value, png: $("m_png").checked, pptx: $("m_pptx").checked, pdf: $("m_pdf").checked,
-    dpi: +$("dpi").value, bleed: parseFloat($("bleed").value) || 0, marks: $("w_marks").checked};
+    dpi: +$("dpi").value, bleed: 0, marks: false};
 }
 function sum3(){
   const n = B.sel.size, o = bOpts();
   const kinds = [o.png && "images PNG", o.pptx && "PowerPoint", o.pdf && "PDF à plat"].filter(Boolean);
   $("b-sum3").innerHTML = n
-    ? `<b>${n}</b> livre(s) sélectionné(s) → <code class="path">${esc(o.out_dir)}\\<i>nom du livre</i>\\</code><br>Fichiers : ${kinds.length ? kinds.join(", ") : "<b class='fail'>aucun format coché</b>"} · ${o.dpi} dpi${o.pdf ? ` · fonds perdus ${o.bleed} mm` : ""} <span class="hint">(qualité et fonds perdus : réglages de la section 6)</span>`
+    ? `<b>${n}</b> livre(s) sélectionné(s) → <code class="path">${esc(o.out_dir)}\\<i>nom du livre</i>\\</code><br>Fichiers : ${kinds.length ? kinds.join(", ") : "<b class='fail'>aucun format coché</b>"} · ${o.dpi} dpi<span class="hint"> (qualité : réglage de la section 6)</span>`
     : "Aucun livre sélectionné.";
   $("b-run").textContent = n ? `Créer ${n} couverture${n > 1 ? "s" : ""}` : "Créer";
   $("b-run").disabled = !n || !kinds.length;

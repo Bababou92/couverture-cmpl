@@ -11,7 +11,7 @@ Pour ton pere (utilisation)
    Un dossier au nom du livre est cree dans le dossier de sortie, avec :
    - 3 images PNG (1re, 4e de couverture, dos), a la taille reelle du livre
    - 1 fichier PowerPoint (.pptx, 3 diapositives) avec de vraies zones de texte modifiables
-   - option : PDF "a plat" pour l'imprimeur (4e + dos + 1re, avec fonds perdus et reperes de coupe)
+   - option : PDF "a plat" pour l'imprimeur (4e + dos + 1re, a la taille exacte)
    A la fin, une fenetre propose "Ouvrir le PowerPoint" et "Ouvrir le dossier".
 Pour quitter : bouton "Quitter" ou fermer l'onglet.
 
@@ -56,14 +56,13 @@ fenetre de verification s'affiche s'il y a des alertes (on peut generer quand me
 
 Dos
 ---
-Le titre et l'auteur du dos se changent dans la section 4 (vides = repris de la 1re). La police du dos est
-volontairement petite. L'epaisseur n'est plus calculee : une valeur par defaut est utilisee (22 mm Droit, 9 mm
+Le titre et l'auteur du dos se changent dans la section 4 (vides = repris de la 1re). Le texte du dos est en
+petites capitales. L'epaisseur n'est plus calculee : une valeur par defaut est utilisee (22 mm Droit, 9 mm
 Malgache) ; si l'imprimeur donne l'epaisseur exacte, la saisir dans "Epaisseur du dos (avance)".
 
 PDF a plat pour l'imprimeur
 ---------------------------
-Onglet "A plat" : 4e + dos + 1re cote a cote, avec fonds perdus (3 mm par defaut) et, en option, reperes de
-coupe et de pliage. Le PDF contient les boites TrimBox / BleedBox. L'image est incluse sans perte (300 dpi max).
+Onglet "A plat" : 4e + dos + 1re cote a cote, a la taille exacte de la couverture. L'image est incluse sans perte (300 dpi max).
 
 Plusieurs couvertures d'un coup (Lot Excel)
 -------------------------------------------
@@ -78,7 +77,7 @@ Bouton "Lot Excel" en haut. Trois etapes, dans l'ordre :
     corriger dans Excel, enregistrer, puis "Relire le fichier". On peut decocher des livres.
  3. "Creer N couvertures" : un sous-dossier est cree par livre, a son nom, dans le dossier choisi.
     (Deux livres de meme nom : "Nom", "Nom (2)".) Les formats de fichiers se choisissent a l'etape 3,
-    la qualite et les fonds perdus dans la section 6.
+    la qualite dans la section 6.
 
 Mises a jour automatiques
 -------------------------
