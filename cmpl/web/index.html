@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Couvertures CMPL</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  :root{
+    --bg:#f3f4f7; --card:#fff; --ink:#1d2433; --muted:#6a7386; --line:#dfe3ea; --accent:#294364; --accent-2:#3b5f8f;
+    --warn:#9a5b00; --warn-bg:#fff4dd; --ok:#1f7a45; --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font:14px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{display:flex;align-items:center;gap:14px;padding:8px 18px;background:var(--accent);color:#fff;position:sticky;top:0;z-index:5;flex-wrap:wrap}
+  header h1{font-size:16px;margin:0;font-weight:600;letter-spacing:.2px;flex:1;min-width:200px;white-space:nowrap}
+  .hgroup{display:flex;gap:6px;align-items:center}
+  .hgroup+.hgroup{padding-left:14px;border-left:1px solid rgba(255,255,255,.25)}
+  header button.hgen{background:#fff;color:var(--accent);border:0;font-weight:700;font-size:15px;padding:9px 20px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+  header button.hgen:hover{background:#eaf1fb}
+  header button.hgen:disabled{opacity:.7;cursor:wait}
+  header button.hquit{background:none;border-color:transparent;opacity:.75;padding:6px 8px}
+  header kbd{font:11px Consolas,monospace;opacity:.7;margin-left:4px}
+  header button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);padding:6px 11px;border-radius:7px;cursor:pointer;font:inherit}
+  header button:hover{background:rgba(255,255,255,.24)}
+  main{display:grid;grid-template-columns:minmax(350px,410px) 1fr;gap:16px;padding:14px 18px;align-items:start}
+  @media(max-width:980px){main{grid-template-columns:1fr}}
+  .col-form{display:flex;flex-direction:column;gap:10px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+  section h2{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+  label{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}
+  label:first-of-type{margin-top:0}
+  label small{font-weight:400;color:var(--muted)}
+  input[type=text],input[type=number],textarea,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;font:inherit;background:#fff;color:var(--ink)}
+  textarea{resize:vertical;min-height:54px}
+  input:focus,textarea:focus,select:focus{outline:2px solid #9db8dc;border-color:#7d9ccb}
+  .hint{color:var(--muted);font-size:12px;margin-top:3px}
+  .row{display:flex;gap:10px}.row>*{flex:1}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{flex:1;padding:9px 8px;border:0;background:#fff;cursor:pointer;font:inherit;color:var(--ink);border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:0}
+  .seg button.on{background:var(--accent);color:#fff}
+  .formats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .fmt{border:2px solid var(--line);border-radius:9px;padding:8px 4px 6px;text-align:center;cursor:pointer;background:#fff;font-size:12px}
+  .fmt.on{border-color:var(--accent);background:#eef3fa}
+  .fmt .shape{margin:0 auto 5px;border:1.5px solid #8a93a5;background:#f7f8fb;height:44px}
+  .fmt.on .shape{border-color:var(--accent)}
+  .fmt b{display:block;font-size:13px}
+  .swgroup{margin-bottom:8px}
+  .swgroup .t{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .sw{display:flex;flex-wrap:wrap;gap:7px}
+  .sw button{width:34px;height:34px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 1px #b9c0cd;cursor:pointer;position:relative;padding:0}
+  .sw button.on{box-shadow:0 0 0 3px var(--accent)}
+  .sw button .x{position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:#444;color:#fff;font-size:11px;line-height:16px;display:none}
+  .sw button:hover .x{display:block}
+  .sw .add{background:#fff;color:var(--muted);font-size:20px;box-shadow:0 0 0 1px #b9c0cd;border-style:dashed}
+  .addbox{display:none;margin-top:8px;padding:10px;border:1px dashed var(--line);border-radius:8px;background:#fafbfd}
+  .addbox.open{display:block}
+  .addbox .row{align-items:center}
+  .btn{padding:8px 14px;border-radius:8px;border:1px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer;font:inherit;font-weight:600}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-2)}
+  .btn:disabled{opacity:.5;cursor:wait}
+  .hexline{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .hexline input[type=text]{width:110px;font-family:Consolas,monospace}
+  .hexline .chip{width:26px;height:26px;border-radius:6px;box-shadow:0 0 0 1px #b9c0cd}
+  .upload{display:flex;gap:12px;align-items:center}
+  .upload .thumb{width:84px;height:84px;border:1px dashed var(--line);border-radius:8px;background:#fafbfd center/contain no-repeat;flex:none}
+  .radios label{display:flex;gap:8px;align-items:center;font-weight:400;margin:6px 0}
+  .radios input{width:auto}
+  .col-prev{position:sticky;top:60px}
+  .prevbox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .tabs{display:flex;gap:6px;margin-bottom:12px}
+  .tabs button{padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer;font:inherit}
+  .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .faces{display:flex;gap:14px;align-items:flex-end;justify-content:center;flex-wrap:nowrap;min-height:min(520px,calc(100vh - 250px));background:#e9ecf1;border-radius:8px;padding:16px;overflow:auto}
+  .face{text-align:center;flex:0 1 auto;min-width:0}
+  .face img{display:block;box-shadow:0 2px 12px rgba(20,30,50,.25);background:#fff;max-width:100%;height:auto}
+  .face .cap{font-size:12px;color:var(--muted);margin-top:6px}
+  .warn{background:var(--warn-bg);color:var(--warn);border:1px solid #f0d9a4;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+  .err{background:#fde8e8;color:#9b1c1c;border:1px solid #f3bcbc;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+  .results{margin-top:10px;font-size:13px}
+  .results .ok{color:var(--ok);font-weight:600}
+  .results ul{margin:6px 0 0;padding-left:18px;word-break:break-all;color:var(--muted)}
+  .busy{opacity:.55;transition:opacity .15s}
+  .isbn-msg{font-size:12px;margin-top:3px}
+  .hide{display:none!important}
+  .bar{height:8px;border-radius:5px;background:#e3e7ee;overflow:hidden;margin:8px 0}
+  .bar>i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+  .fail{color:#9b1c1c}
+  .info{background:#f0f2f6;color:#566073;border:1px solid #dfe3ea;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+  header .grow{flex:1}
+  header h1 small{font-weight:400;font-size:12px;opacity:.8;margin-left:10px}
+  header button:disabled{opacity:.35;cursor:default}
+  .face .iw{position:relative;line-height:0;display:inline-block}
+  .face .ovl{position:absolute;cursor:grab;touch-action:none}
+  .face .ovl:hover{outline:2px dashed rgba(59,140,255,.9);outline-offset:-2px}
+  .modal{position:fixed;inset:0;background:rgba(20,28,43,.55);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:4vh 16px;overflow:auto}
+  .modal.top{z-index:70}
+  .mbox{background:#fff;border-radius:12px;width:100%;max-width:1100px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+  .mbox.narrow{max-width:520px}
+  .mhead{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .mhead h3{margin:0;flex:1;font-size:17px}
+  .mbody{padding:16px 18px}
+  .mfoot{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .xbtn{border:0;background:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+  .step{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+  .step.off{opacity:.5;pointer-events:none}
+  .step h4{margin:0 0 8px;font-size:14px;display:flex;align-items:center}
+  .step h4 .n{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;align-items:center;justify-content:center;font-size:12px;margin-right:8px;flex:none}
+  .step p{margin:4px 0 10px;color:var(--muted)}
+  .tablewrap{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:8px;margin-top:10px}
+  table.bt{width:100%;border-collapse:collapse;font-size:13px}
+  .bt th{text-align:left;font-size:12px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fafbfd;z-index:1}
+  .bt td{padding:8px;border-bottom:1px solid #eef0f4;vertical-align:middle}
+  .bt tr.bad td{background:#fff6f6}
+  .bt tr.off td{opacity:.45}
+  .bt img{height:70px;border:1px solid var(--line);cursor:zoom-in;display:block;background:#fff}
+  .bt .small{font-size:12px;color:var(--muted)}
+  .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700}
+  .tag.ok{background:#e4f5ea;color:#1f7a45}.tag.warn{background:var(--warn-bg);color:var(--warn)}.tag.bad{background:#fde8e8;color:#9b1c1c}.tag.info{background:#eef0f4;color:#5a6477}
+  .swatch{display:inline-block;width:16px;height:16px;border-radius:4px;vertical-align:middle;box-shadow:0 0 0 1px #b9c0cd;margin-right:6px}
+  .lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px;margin-top:12px}
+  .lcard{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;background:#fff}
+  .lcard .th{height:160px;background:#eef0f4 center/contain no-repeat;border-radius:6px}
+  .lcard b{font-size:14px;line-height:1.25;word-break:break-word}
+  .lcard .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .lcard .btns .btn{padding:5px 9px;font-size:12px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:9px;z-index:90;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+  .toast.show{opacity:1}
+  .banner{background:#eef3fa;border:1px solid #c7d6ec;border-radius:10px;padding:10px 14px;margin:14px 18px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .banner span{flex:1;min-width:220px}
+  .viewfaces{display:flex;gap:16px;justify-content:center;align-items:flex-end;flex-wrap:wrap;background:#e9ecf1;border-radius:8px;padding:16px}
+  .viewfaces img{max-height:78vh;max-width:100%;box-shadow:0 2px 12px rgba(20,30,50,.25);background:#fff}
+  .sum{background:#f6f8fb;border-radius:8px;padding:8px 12px;margin-top:10px;font-size:13px}
+  code.path{font-family:Consolas,monospace;font-size:12px;background:#f0f2f6;padding:1px 5px;border-radius:4px;word-break:break-all}
+  .swgroup .t small{opacity:.8}
+  .chk{display:flex;gap:8px;align-items:center;font-weight:400;margin:10px 0 0}
+  .chk input{width:auto}
+  details.adv{margin-top:10px}
+  details.adv summary{cursor:pointer;color:var(--muted);font-size:13px}
+  .prevtools{display:flex;align-items:center;gap:12px;margin:-2px 0 10px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  .prevtools label{display:inline-flex;gap:6px;align-items:center;font-weight:400;margin:0;cursor:pointer}
+  .prevtools input{width:auto}
+  .face .cap button{border:0;background:none;color:var(--accent-2);cursor:pointer;font:inherit;font-size:12px;padding:0 0 0 8px}
+  .face .cap button:hover{text-decoration:underline}
+  .face .hs{position:absolute;min-width:14px;min-height:14px;cursor:text;border-radius:2px}
+  .face .hs:hover,.face .hs.act{outline:1.5px dashed rgba(59,140,255,.95);outline-offset:1px;background:rgba(59,140,255,.10)}
+  .faces.showhs .hs{outline:1px dashed rgba(59,140,255,.7);outline-offset:1px}
+  .ed{position:fixed;z-index:60;width:340px;max-width:calc(100vw - 16px);background:#fff;border:1px solid #9db8dc;border-radius:10px;box-shadow:0 10px 32px rgba(20,30,50,.35);padding:10px 12px 8px}
+  .ed .edh{display:flex;align-items:center;margin-bottom:6px}
+  .ed .edh b{flex:1;font-size:13px}
+  .ed label{margin:8px 0 3px;font-size:12px}
+  .ed textarea{min-height:60px}
+  .ed .sw button{width:28px;height:28px}
+  .done-files{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px;word-break:break-all}
+  .upd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 18px;background:#fff7e0;border-bottom:1px solid #e8d28a;color:#5a4400;font-size:14px}
+  .upd .grow{flex:1;min-width:200px}
+  .upd .bar{height:8px;border-radius:4px;background:#ecdfb0;overflow:hidden;flex:1;min-width:160px;max-width:320px}
+  .upd .bar i{display:block;height:100%;width:0;background:var(--accent-2);transition:width .3s}
+  .upd button{font:inherit;font-size:13.5px;padding:5px 12px;border-radius:6px;border:1px solid #c9ae5a;background:#fff;color:#4a3800;cursor:pointer}
+  .upd button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .foot{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 18px}
+  .foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Couvertures CMPL <small id="doc-state"></small></h1>
+  <div class="hgroup">
+    <button id="b-new" title="Vider les champs du modèle choisi">Nouvelle</button>
+    <button id="b-example" title="Recharger l'exemple du modèle choisi">Exemple</button>
+    <button id="b-lib" title="Toutes les couvertures enregistrées">Bibliothèque</button>
+    <button id="b-batch" title="Créer plusieurs couvertures d'un coup depuis un tableau Excel">Lot Excel</button>
+  </div>
+  <div class="hgroup">
+    <button id="b-undo" title="Annuler la dernière modification (Ctrl+Z)" disabled>↶</button>
+    <button id="b-redo" title="Rétablir (Ctrl+Y)" disabled>↷</button>
+    <button id="b-save" title="Enregistrer cette couverture dans la bibliothèque (Ctrl+S)">Enregistrer<kbd>Ctrl+S</kbd></button>
+  </div>
+  <button id="gen-top" class="hgen" title="Créer les fichiers de cette couverture (Ctrl+Entrée)">Générer les fichiers</button>
+  <button id="b-quit" class="hquit" title="Fermer le générateur">Quitter</button>
+  <input type="file" id="f-fiche" accept=".json,application/json" class="hide">
+</header>
+<div class="banner hide" id="draft-banner"><span>📝 Une couverture en cours a été retrouvée (<b id="draft-title"></b>). Veux-tu la reprendre ?</span>
+  <button class="btn primary" id="draft-yes">Reprendre</button><button class="btn" id="draft-no">Non, merci</button></div>
+
+<div class="upd hide" id="upd"></div>
+<main>
+<div class="col-form">
+
+  <section>
+    <h2>1 · Modèle, format et couleur</h2>
+    <div class="seg" id="seg-type">
+      <button data-v="A">Droit · enseignement supérieur</button>
+      <button data-v="B">Littérature malgache · illustrée</button>
+    </div>
+    <div class="formats" id="formats"></div>
+    <div id="palette" style="margin-top:12px"></div>
+    <div class="addbox" id="addbox">
+      <div class="row">
+        <input type="color" id="newcol" value="#294364" style="max-width:64px;height:36px;padding:2px">
+        <input type="text" id="newname" placeholder="Nom (ex. Vert sapin)">
+        <button class="btn" id="addok" style="flex:0 0 auto">Ajouter</button>
+      </div>
+    </div>
+    <div class="hexline"><span>Couleur choisie</span><span class="chip" id="chip"></span><input type="text" id="hex" maxlength="7"></div>
+    <div class="hint" id="colhint"></div>
+  </section>
+
+  <section>
+    <h2>2 · 1re de couverture</h2>
+    <div data-t="A">
+      <label>Auteur(s) <small>— un par ligne, comme sur la couverture (Nom Prénom)</small></label>
+      <textarea id="auteurs" rows="3"></textarea>
+    </div>
+    <div data-t="B">
+      <label>Auteur</label>
+      <input type="text" id="auteur">
+    </div>
+    <label>Titre <small>— tu peux forcer les retours à la ligne, sinon c'est automatique</small></label>
+    <textarea id="titre" rows="2"></textarea>
+    <div data-t="A">
+      <label>Sous-titre <small>(optionnel, en gras)</small></label>
+      <input type="text" id="sous_titre">
+      <div class="row">
+        <div><label>Tome / volume <small>(optionnel)</small></label><input type="text" id="tome"></div>
+        <div><label>Mention <small>(ex. nouvelle édition 2026)</small></label><input type="text" id="mention"></div>
+      </div>
+      <label>Détails <small>(optionnel, une ligne par détail, en petit)</small></label>
+      <textarea id="details" rows="2"></textarea>
+      <label>Collection <small>(case blanche en bas)</small></label>
+      <input type="text" id="collection" list="dl-coll">
+      <datalist id="dl-coll"></datalist>
+    </div>
+    <div data-t="B">
+      <label>Maison d'édition <small>(en bas)</small></label>
+      <input type="text" id="maison">
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · 4e de couverture</h2>
+    <div data-t="A">
+      <label>Titre <small>— vide = même que la 1re</small></label>
+      <input type="text" id="titre_4e">
+    </div>
+    <div data-t="B">
+      <label>Auteur / sous-titre <small>— une ligne par ligne affichée</small></label>
+      <textarea id="auteur_4e" rows="2"></textarea>
+    </div>
+    <label>Texte <small>— une ligne = un paragraphe</small></label>
+    <textarea id="texte_4e" rows="7"></textarea>
+    <div class="hint" data-t="A">« - » au début = puce · deux espaces au début = sous-élément · ligne vide = espace</div>
+    <div data-t="A">
+      <label>Auteurs <small>— un par ligne, vide = comme la 1re</small></label>
+      <textarea id="auteurs_4e" rows="3"></textarea>
+      <div class="row">
+        <div><label>ISBN <small>(le code-barres se fait tout seul)</small></label><input type="text" id="isbn" placeholder="978-2-494268-20-3"><div class="isbn-msg" id="isbnmsg"></div></div>
+        <div><label>Slogan</label><input type="text" id="slogan"></div>
+      </div>
+      <div class="hint">Petites capitales : les majuscules restent grandes, les minuscules deviennent petites (ex. « TOUT ce qu’il faut SAVOIR »).</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>4 · Dos</h2>
+    <label>Titre du dos <small>— vide = même que la 1re</small></label>
+    <input type="text" id="dos_titre">
+    <label>Auteur du dos <small>— vide = auto</small></label>
+    <input type="text" id="dos_auteur">
+    <details class="adv"><summary>Épaisseur du dos (avancé)</summary>
+      <div class="row" style="align-items:center;margin-top:8px"><div><input type="number" id="spine_mm" min="3" max="80" step="0.5"></div><div class="hint" style="margin:0">mm — valeur par défaut correcte ; à ajuster seulement si l'imprimeur donne l'épaisseur exacte.</div></div>
+    </details>
+  </section>
+
+  <section>
+    <h2>5 · Images et logos</h2>
+    <div data-t="B">
+      <label>Illustration <small>(dans le cadre de la 1re)</small></label>
+      <div class="upload">
+        <div class="thumb" id="ill-thumb"></div>
+        <div>
+          <button class="btn" id="ill-btn">Choisir une image…</button>
+          <button class="btn" id="ill-del" style="border-color:#b9c0cd;color:#6a7386">Retirer</button>
+          <div class="hint">PNG, JPG, etc. L'image n'est jamais déformée.</div>
+        </div>
+        <input type="file" id="ill-file" accept="image/*" class="hide">
+      </div>
+      <label class="chk"><input type="checkbox" id="ill_tint"> Colorer l'image avec la couleur du livre</label>
+      <div class="hint" style="margin-left:24px">Décoche pour garder les couleurs d'origine de l'image.</div>
+      <div id="ill-crop" class="hide">
+        <label style="margin-top:12px">Cadrage <small>— sur l'aperçu : glisse l'image pour la déplacer, molette pour zoomer</small></label>
+        <div class="row" style="align-items:center;gap:12px"><input type="range" id="ill-zoom" min="100" max="600" step="5"><span id="ill-zoom-v" style="flex:0 0 54px;text-align:right">100 %</span></div>
+        <div class="row" style="gap:8px;margin-top:6px"><button class="btn" id="ill-fill">Remplir le cadre</button><button class="btn" id="ill-fit">Image entière</button><button class="btn" id="ill-center">Recentrer</button></div>
+      </div>
+      <label style="margin-top:14px">Logo rond <small>(coin de la 4e)</small></label>
+      <div class="radios" id="rond">
+        <label><input type="radio" name="rond" value="defaut"> Logo TAKA d'origine (à la couleur du livre)</label>
+        <label><input type="radio" name="rond" value="aucun"> Aucun</label>
+        <label><input type="radio" name="rond" value="import"> Importer un autre logo…</label>
+      </div>
+      <div class="upload hide" id="rond-up">
+        <div class="thumb" id="rond-thumb"></div>
+        <button class="btn" id="rond-btn">Choisir une image…</button>
+        <input type="file" id="rond-file" accept="image/*" class="hide">
+      </div>
+    </div>
+    <label>Logo CMPL Éditeur</label>
+    <div class="radios" id="logo">
+      <label><input type="radio" name="logo" value="couleur"> Couleurs d'origine (rouge et bleu)</label>
+      <label><input type="radio" name="logo" value="noir"> Noir et blanc</label>
+      <label><input type="radio" name="logo" value="mono"> À la couleur du livre</label>
+    </div>
+  </section>
+
+  <section>
+    <h2>6 · Fichiers à produire</h2>
+    <label>Dossier de sortie</label>
+    <div class="row" style="gap:8px"><input type="text" id="out_dir"><button class="btn" id="browse" style="flex:0 0 auto">Parcourir…</button></div>
+    <label>Nom du livre <small>— nom du dossier créé et des fichiers ; vide = titre</small></label>
+    <input type="text" id="fname">
+    <div class="row" style="margin-top:10px;align-items:center">
+      <div class="radios"><label><input type="checkbox" id="w_png" checked> Images PNG (1re, 4e, dos)</label>
+      <label><input type="checkbox" id="w_pptx" checked> PowerPoint (.pptx modifiable)</label>
+      <label><input type="checkbox" id="w_pdf"> PDF couverture à plat (pour l'imprimeur)</label></div>
+      <div><label style="margin:0 0 4px">Qualité des PNG</label>
+        <select id="dpi"><option value="150">150 dpi (léger)</option><option value="300" selected>300 dpi (impression)</option><option value="600">600 dpi (très haute)</option></select></div>
+    </div>
+    <div class="row" style="margin-top:6px;align-items:end">
+      <div><label>Fonds perdus <small>(mm)</small></label><input type="number" id="bleed" min="0" max="10" step="0.5" value="3"></div>
+      <div class="radios"><label style="margin-top:22px"><input type="checkbox" id="w_marks"> Traits de coupe et de pli</label></div>
+    </div>
+    <div class="hint">Le PDF à plat assemble 4e + dos + 1re, avec fonds perdus. Le plan est visible dans l'onglet « À plat » (cyan = coupe, rose = plis du dos).</div>
+    <div style="margin-top:14px"><button class="btn primary" id="gen" style="width:100%;padding:11px">Générer les fichiers</button></div>
+    <div class="hint" style="margin-top:6px">Un dossier est créé au nom du livre dans le dossier de sortie.</div>
+  </section>
+
+</div>
+
+<div class="col-prev">
+  <div class="prevbox">
+    <div class="tabs" id="tabs">
+      <button data-v="all" class="on">Tout</button><button data-v="0">1re</button><button data-v="1">4e</button><button data-v="2">Dos</button><button data-v="3">À plat (imprimeur)</button>
+    </div>
+    <div class="prevtools"><span>✎ <b>Double-clic sur un texte</b> de l'aperçu pour le modifier ici</span>
+      <label><input type="checkbox" id="showhs"> Montrer les zones</label></div>
+    <div id="msgs"></div>
+    <div class="faces" id="faces"></div>
+    <div class="hint" style="margin-top:8px">Aperçu en direct. Les fichiers générés sont à la taille réelle du livre.</div>
+  </div>
+</div>
+</main>
+<div class="foot"><span id="ver"></span> · <a href="#" id="upd-check">Rechercher une mise à jour</a></div>
+
+
+<!-- ================= modales ================= -->
+<div class="modal hide" id="m-batch"><div class="mbox">
+  <div class="mhead"><h3>Créer plusieurs couvertures depuis un tableau Excel</h3><button class="xbtn" id="mb-x" title="Fermer">✕</button></div>
+  <div class="mbody">
+    <div class="step" id="st1">
+      <h4><span class="n">1</span>Récupérer le modèle Excel</h4>
+      <p>Le modèle s'ouvre dans Excel : une ligne par livre, avec des listes déroulantes, la liste des couleurs et un exemple. Remplis-le, enregistre-le (Ctrl + S) et ferme Excel.</p>
+      <div class="row" style="gap:8px;align-items:center"><button class="btn primary" id="b-tpl" style="flex:0 0 auto">Créer le modèle et l'ouvrir dans Excel</button><span class="hint" id="b-tpl-alt" style="flex:1"></span></div>
+      <div id="b-tpl-res" style="margin-top:8px"></div>
+    </div>
+    <div class="step" id="st2">
+      <h4><span class="n">2</span>Importer ton fichier rempli et vérifier</h4>
+      <p>Tu vois ci-dessous chaque livre qui sera créé, avec un aperçu, avant de valider quoi que ce soit.</p>
+      <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><button class="btn primary" id="b-pick" style="flex:0 0 auto">Choisir mon fichier Excel…</button>
+        <button class="btn hide" id="b-reload" style="flex:0 0 auto">↻ Relire le fichier</button><span id="b-file" style="flex:1;min-width:200px"></span></div>
+      <input type="file" id="batch-file" accept=".xlsx,.csv" class="hide">
+      <details style="margin-top:10px"><summary style="cursor:pointer;color:var(--muted)">Mes images ne sont pas à côté du fichier Excel</summary>
+        <div class="hint" style="margin:6px 0">Par défaut, les images (colonne Illustration) sont cherchées à côté du fichier Excel. Sinon, indique leur dossier :</div>
+        <div class="row" style="gap:8px"><input type="text" id="img_dir" placeholder="(facultatif)"><button class="btn" id="browse2" style="flex:0 0 auto">Parcourir…</button></div>
+      </details>
+      <div id="b-progress"></div>
+      <div id="b-summary" style="margin-top:10px"></div>
+      <div class="tablewrap hide" id="b-tablewrap"><table class="bt" id="b-table"></table></div>
+    </div>
+    <div class="step off" id="st3">
+      <h4><span class="n">3</span>Créer les couvertures</h4>
+      <label style="margin-top:0">Dossier où créer les livres <small>— un sous-dossier par livre, nommé comme le livre</small></label>
+      <div class="row" style="gap:8px"><input type="text" id="m_out_dir"><button class="btn" id="m_browse" style="flex:0 0 auto">Parcourir…</button></div>
+      <div class="radios" style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px">
+        <label><input type="checkbox" id="m_png"> Images PNG</label><label><input type="checkbox" id="m_pptx"> PowerPoint</label><label><input type="checkbox" id="m_pdf"> PDF à plat (imprimeur)</label></div>
+      <div class="sum" id="b-sum3"></div>
+      <div style="margin-top:12px"><button class="btn primary" id="b-run" style="width:100%;padding:11px">Créer</button></div>
+      <div id="b-run-res" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div></div>
+
+<div class="modal hide" id="m-lib"><div class="mbox">
+  <div class="mhead"><h3>Bibliothèque de couvertures</h3><button class="xbtn" id="ml-x" title="Fermer">✕</button></div>
+  <div class="mbody">
+    <input type="text" id="lib-q" placeholder="Rechercher un titre ou un auteur…">
+    <div id="lib-grid" class="lib-grid"></div>
+  </div>
+  <div class="mfoot"><span class="hint" style="flex:1;align-self:center">« Ouvrir » reprend la couverture pour la modifier · « Dupliquer » en fait une copie (nouvelle édition, tome suivant…)</span>
+    <button class="btn" id="lib-import">Importer un fichier…</button><button class="btn" id="lib-export">Exporter la couverture en cours…</button></div>
+</div></div>
+
+<div class="modal hide" id="m-view"><div class="mbox">
+  <div class="mhead"><h3 id="mv-title">Aperçu</h3><button class="xbtn" id="mv-x" title="Fermer">✕</button></div>
+  <div class="mbody"><div class="viewfaces" id="mv-faces"></div></div>
+</div></div>
+
+<div class="modal hide top" id="m-confirm"><div class="mbox narrow">
+  <div class="mhead"><h3 id="c-title"></h3></div>
+  <div class="mbody" id="c-body"></div>
+  <div class="mfoot"><button class="btn" id="c-cancel">Retour</button><button class="btn primary" id="c-ok">Continuer</button></div>
+</div></div>
+<div class="modal hide" id="m-done"><div class="mbox narrow">
+  <div class="mhead"><h3 id="d-title">✓ Couverture créée</h3><button class="xbtn" id="d-x" title="Fermer">✕</button></div>
+  <div class="mbody" id="d-body"></div>
+  <div class="mfoot" id="d-foot"><button class="btn" id="d-folder">Ouvrir le dossier</button><button class="btn primary" id="d-pptx">Ouvrir le PowerPoint</button></div>
+</div></div>
+<div class="ed hide" id="ed"><div class="edh"><b id="ed-t"></b><button class="xbtn" id="ed-x" title="Fermer (Échap)">✕</button></div><div id="ed-f"></div>
+  <div class="hint" id="ed-h" style="margin-top:8px">Entrée ou Échap pour fermer · l'aperçu se met à jour en direct.</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOKEN = "__TOKEN__";
+let boot = null, S = {}, ui = {view: "all", ill_thumb: null, rond_thumb: null, rond_id: null, libId: null, dirty: false,
+  hot: null, warnings: [], draftHold: false};
+let seq = 0, timer = null, lastFaces = null;
+const thumbs = {};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const api = async (path, body) => {
+  const r = await fetch(path, {method: "POST", headers: {"X-Token": TOKEN, "Content-Type": "application/json"}, body: JSON.stringify(body || {})});
+  let j = {}; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+};
+const show = id => $(id).classList.remove("hide");
+const hide = id => $(id).classList.add("hide");
+let toastT = null;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 3200); }
+function confirmBox(title, html, okLabel, cancelLabel){
+  return new Promise(res => {
+    $("c-title").textContent = title; $("c-body").innerHTML = html;
+    $("c-ok").textContent = okLabel || "Continuer"; $("c-cancel").textContent = cancelLabel || "Retour";
+    show("m-confirm");
+    const done = v => { hide("m-confirm"); $("c-ok").onclick = $("c-cancel").onclick = null; res(v); };
+    $("c-ok").onclick = () => done(true); $("c-cancel").onclick = () => done(false);
+  });
+}
+
+const TEXT_FIELDS = ["auteurs","auteur","titre","sous_titre","tome","mention","details","collection","maison",
+  "titre_4e","auteur_4e","texte_4e","auteurs_4e","isbn","slogan","dos_titre","dos_auteur"];
+
+function params(){
+  const p = {};
+  for (const k of ["type","format","color","logo","spine_mm","illustration","logo_rond","ill_zoom","ill_x","ill_y","ill_tint"]) p[k] = S[k];
+  for (const k of TEXT_FIELDS) p[k] = S[k] || "";
+  return p;
+}
+
+function fillForm(){
+  for (const k of TEXT_FIELDS) if ($(k)) $(k).value = S[k] || "";
+  $("spine_mm").value = S.spine_mm;
+  $("hex").value = S.color;
+  $("chip").style.background = S.color;
+  document.querySelectorAll("#seg-type button").forEach(b => b.classList.toggle("on", b.dataset.v === S.type));
+  document.querySelectorAll("[data-t]").forEach(e => e.classList.toggle("hide", e.dataset.t !== S.type));
+  document.querySelectorAll("input[name=logo]").forEach(r => r.checked = r.value === S.logo);
+  const rondMode = S.logo_rond === "defaut" ? "defaut" : (S.logo_rond === "aucun" || !S.logo_rond ? "aucun" : "import");
+  document.querySelectorAll("input[name=rond]").forEach(r => r.checked = r.value === rondMode);
+  $("rond-up").classList.toggle("hide", rondMode !== "import");
+  $("ill-thumb").style.backgroundImage = ui.ill_thumb ? `url(${ui.ill_thumb})` : "";
+  $("rond-thumb").style.backgroundImage = ui.rond_thumb ? `url(${ui.rond_thumb})` : "";
+  $("ill-crop").classList.toggle("hide", !(S.type === "B" && S.illustration));
+  syncZoomUi();
+  renderFormats(); renderPalette(); isbnMsg();
+  $("ill_tint").checked = S.ill_tint !== false;
+  colHint();
+  docState();
+}
+
+function syncZoomUi(){
+  const z = S.ill_zoom || 1;
+  $("ill-zoom").value = Math.round(z * 100);
+  $("ill-zoom-v").textContent = Math.round(z * 100) + " %";
+}
+
+function docState(){
+  const el = $("doc-state");
+  if (ui.libId) el.textContent = ui.dirty ? "● modifications non enregistrées" : "✓ enregistrée dans la bibliothèque";
+  else el.textContent = ui.dirty ? "● pas encore enregistrée" : "";
+}
+
+function renderFormats(){
+  const box = $("formats"); box.innerHTML = "";
+  for (const [k, f] of Object.entries(boot.formats)) {
+    const d = document.createElement("div");
+    d.className = "fmt" + (S.format === k ? " on" : "");
+    const h = 44, w = Math.round(h * f.w / f.h);
+    const [t1, t2] = f.label.split(" · ");
+    d.innerHTML = `<div class="shape" style="width:${w}px"></div><b>${f.w} × ${f.h}</b>${t1}`;
+    d.onclick = () => { S.format = k; fillForm(); schedule(); };
+    box.appendChild(d);
+  }
+}
+
+function allColors(){
+  const groups = JSON.parse(JSON.stringify(boot.palettes[S.type] || boot.palettes.A));
+  if (boot.settings.custom_colors.length) groups.push({group: "Mes couleurs", custom: true, colors: boot.settings.custom_colors});
+  return groups;
+}
+
+function renderPalette(){
+  const box = $("palette"); box.innerHTML = "";
+  allColors().forEach(g => {
+    const wrap = document.createElement("div"); wrap.className = "swgroup";
+    wrap.innerHTML = `<div class="t">${esc(g.group)}</div>`;
+    const sw = document.createElement("div"); sw.className = "sw";
+    g.colors.forEach((c, i) => {
+      const b = document.createElement("button");
+      b.style.background = c.hex; b.title = `${c.name} · ${c.hex}`;
+      if (c.hex.toLowerCase() === (S.color || "").toLowerCase()) b.classList.add("on");
+      b.onclick = () => { S.color = c.hex; fillForm(); schedule(); };
+      if (g.custom) {
+        const x = document.createElement("span"); x.className = "x"; x.textContent = "×"; x.title = "Supprimer cette couleur";
+        x.onclick = ev => { ev.stopPropagation(); boot.settings.custom_colors.splice(i, 1); saveSettings(); renderPalette(); };
+        b.appendChild(x);
+      }
+      sw.appendChild(b);
+    });
+    wrap.appendChild(sw); box.appendChild(wrap);
+  });
+  const add = document.createElement("div"); add.className = "sw";
+  const b = document.createElement("button"); b.className = "add"; b.textContent = "+"; b.title = "Créer une couleur";
+  b.onclick = () => { $("newcol").value = S.color; $("addbox").classList.toggle("open"); };
+  add.appendChild(b); box.appendChild(add);
+}
+
+function lumOf(h){
+  const c = [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16) / 255).map(v => v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4));
+  return .2126 * c[0] + .7152 * c[1] + .0722 * c[2];
+}
+function colHint(){
+  const el = $("colhint"); if (!el) return;
+  const light = S.type === "B" && /^#[0-9a-f]{6}$/i.test(S.color || "") && 1.05 / (lumOf(S.color) + .05) < 3;
+  const both = S.ill_tint !== false && S.illustration;
+  el.textContent = !light ? "" : both ? "Couleur claire : le titre et l'image sont automatiquement assombris pour rester lisibles."
+    : "Couleur claire : le titre est automatiquement assombri pour rester lisible.";
+}
+
+function saveSettings(){
+  api("/api/settings", {custom_colors: boot.settings.custom_colors, out_dir: $("out_dir").value}).catch(() => {});
+}
+
+function isbnMsg(){
+  const el = $("isbnmsg"); if (!el) return;
+  const d = (S.isbn || "").replace(/[^0-9]/g, "");
+  if (!d) { el.textContent = ""; return; }
+  if (d.length !== 13) { el.textContent = "13 chiffres attendus (" + d.length + " saisis)"; el.style.color = "#9a5b00"; return; }
+  let t = 0; for (let i = 0; i < 12; i++) t += +d[i] * (i % 2 ? 3 : 1);
+  const c = (10 - t % 10) % 10;
+  if (c !== +d[12]) { el.textContent = "Clé de contrôle incorrecte (attendu : " + c + ")"; el.style.color = "#9a5b00"; }
+  else { el.textContent = "✓ ISBN valide, code-barres généré"; el.style.color = "#1f7a45"; }
+}
+
+// ---------------------------------------------------------------- aperçu
+function schedule(fromLoad){
+  clearTimeout(timer); timer = setTimeout(refresh, 220);
+  if (!fromLoad) {
+    if (ui.draftHold) { ui.draftHold = false; hide("draft-banner"); }
+    ui.dirty = true; docState(); histSoon();
+  }
+  clearTimeout(ui.autoT); ui.autoT = setTimeout(saveDraft, 1500);
+}
+async function flush(){ if (timer) { clearTimeout(timer); timer = null; await refresh(); } }
+
+const ICON = {error: "✖", warn: "⚠", info: "ℹ"}, CLS = {error: "err", warn: "warn", info: "info"};
+function warningsHtml(list){
+  return (list || []).map(w => `<div class="${CLS[w.level] || "info"}">${ICON[w.level] || "ℹ"} ${esc(w.text)}</div>`).join("");
+}
+
+async function refresh(){
+  timer = null;
+  const my = ++seq;
+  $("faces").classList.add("busy");
+  try {
+    const r = await api("/api/preview", {params: params(), dpi: 130, bleed: parseFloat($("bleed").value) || 0});
+    if (my !== seq) return;
+    lastFaces = r.faces; ui.hot = r.hot; ui.warnings = r.warnings; ui.texts = r.texts || [];
+    $("msgs").innerHTML = warningsHtml(r.warnings);
+    drawFaces();
+  } catch (e) {
+    if (my === seq) $("msgs").innerHTML = `<div class="err">Erreur d'aperçu : ${esc(e.message)}</div>`;
+  } finally { if (my === seq) $("faces").classList.remove("busy"); }
+}
+
+function drawFaces(){
+  if (!lastFaces) return;
+  const box = $("faces"); box.innerHTML = "";
+  const show_ = ui.view === "all" ? [0, 1, 2] : [+ui.view];
+  const avail = box.clientWidth - 40 - 14 * (show_.length - 1);
+  const totalW = show_.reduce((a, i) => a + lastFaces[i].w, 0);
+  const maxH = Math.max(...show_.map(i => lastFaces[i].h));
+  const availH = Math.max(340, window.innerHeight - 270);
+  const k = Math.min(avail / totalW, availH / maxH, 1.5);
+  const names = ["1re de couverture", "4e de couverture", "Dos"];
+  show_.forEach(i => {
+    const f = lastFaces[i];
+    const d = document.createElement("div"); d.className = "face";
+    const w = Math.round(f.w * k);
+    d.innerHTML = `<div class="iw"><img ${i === 0 ? 'id="face0"' : ""} src="data:image/png;base64,${f.png}" style="width:${w}px"></div><div class="cap">${i < 3 ? names[i] : esc(f.name)}${i < 3 ? `<button data-big="${i}" title="Voir en grand">⤢ Agrandir</button>` : ""}</div>`;
+    box.appendChild(d);
+    const iw = d.querySelector(".iw");
+    if (i === 0 && S.type === "B" && S.illustration && ui.hot) {
+      const h = ui.hot, ov = document.createElement("div"); ov.className = "ovl";
+      ov.style.cssText = `left:${h.x * 100}%;top:${h.y * 100}%;width:${h.w * 100}%;height:${h.h * 100}%`;
+      ov.title = "Glisse pour déplacer l'image · molette pour zoomer · double-clic pour changer d'image";
+      iw.appendChild(ov);
+      attachPan(ov, d.querySelector("img"));
+      ov.addEventListener("dblclick", () => $("ill-file").click());
+    }
+    if (i < 3) (ui.texts || []).filter(t => t.face === i).forEach(t => {
+      const hs = document.createElement("div"); hs.className = "hs";
+      const [x, y, ww, hh] = t.rect;
+      hs.style.cssText = `left:${x * 100}%;top:${y * 100}%;width:${ww * 100}%;height:${hh * 100}%`;
+      hs.title = "Double-clic pour modifier : " + t.label;
+      hs.addEventListener("dblclick", ev => { ev.preventDefault(); ev.stopPropagation(); openEditor(t, hs); });
+      iw.appendChild(hs);
+    });
+    iw.addEventListener("dblclick", ev => { if (ev.target.tagName === "IMG") openColorPop(ev.clientX, ev.clientY); });
+    const bb = d.querySelector("[data-big]"); if (bb) bb.onclick = () => bigView(i);
+  });
+  const act = ui.edKey; if (act) { box.querySelectorAll(".hs").forEach(h => { if (h.title.endsWith(act)) h.classList.add("act"); }); }
+}
+window.addEventListener("resize", () => { closeEditor(); drawFaces(); });
+
+// ---- mises à jour
+let updDismissed = false, updPoll = null;
+function updRender(u){
+  const el = $("upd"), say = (html, btns) => { el.innerHTML = `<span class="grow">${html}</span>${btns || ""}`; el.classList.remove("hide"); };
+  const hideBar = () => el.classList.add("hide");
+  if (u.state === "available" && !updDismissed) {
+    const n = (u.notes || "").trim();
+    say(`<b>Nouvelle version ${esc(u.latest.version)} disponible</b> (tu as la ${esc(u.version)})${n ? " — " + esc(n.split("\n")[0]).slice(0, 140) : ""}`,
+      `<button class="primary" id="u-go">Mettre à jour</button><button id="u-later">Plus tard</button>`);
+    $("u-go").onclick = updStart; $("u-later").onclick = () => { updDismissed = true; hideBar(); };
+    if (!u.can_apply) $("u-go").title = "La mise à jour automatique marche dans le programme .exe";
+  } else if (u.state === "downloading") {
+    say(`Téléchargement de la mise à jour… ${Math.round((u.progress || 0) * 100)} %`, `<div class="bar"><i style="width:${Math.round((u.progress || 0) * 100)}%"></i></div><button id="u-cancel">Annuler</button>`);
+    $("u-cancel").onclick = () => api("/api/update/cancel", {}).then(updRender);
+  } else if (u.state === "ready") {
+    say("Mise à jour téléchargée, installation…");
+  } else if (u.state === "restarting") {
+    say("Redémarrage du programme… cette page va se recharger toute seule.");
+  } else if (u.state === "error" && u.error) {
+    say("⚠ " + esc(u.error), `<button id="u-x">OK</button>`); $("u-x").onclick = hideBar;
+  } else if (!(u.state === "available" && updDismissed)) hideBar();
+}
+async function updPollLoop(){
+  clearTimeout(updPoll);
+  try {
+    const u = await api("/api/update/status", {});
+    updRender(u);
+    if (u.state === "ready") return updApply();
+    if (["downloading", "ready", "checking"].includes(u.state)) updPoll = setTimeout(updPollLoop, 500);
+  } catch (e) {}
+}
+async function updStart(){
+  const u = await api("/api/update/start", {}); updRender(u); updPoll = setTimeout(updPollLoop, 400);
+}
+async function updApply(){
+  try { await flush(); } catch (e) {}
+  try { const u = await api("/api/update/apply", {}); updRender(u); } catch (e) { /* le serveur s'arrête : normal */ }
+  $("upd").innerHTML = '<span class="grow">Redémarrage du programme… cette page va se recharger toute seule.</span>'; $("upd").classList.remove("hide");
+  const t0 = Date.now();
+  const tick = async () => {
+    try { const r = await fetch("/api/ping"); const j = await r.json(); if (j.app && Date.now() - t0 > 2500) return location.reload(); } catch (e) {}
+    if (Date.now() - t0 > 40000) { $("upd").innerHTML = '<span class="grow">Mise à jour installée. Ferme cet onglet et relance « Couvertures CMPL ».</span>'; return; }
+    setTimeout(tick, 1000);
+  };
+  setTimeout(tick, 2000);
+}
+$("upd-check").onclick = async e => {
+  e.preventDefault(); updDismissed = false; toast("Recherche de mises à jour…");
+  await api("/api/update/check", {});
+  for (let i = 0; i < 20; i++) {
+    await new Promise(r => setTimeout(r, 400));
+    const u = await api("/api/update/status", {});
+    if (u.state !== "checking") {
+      if (u.state === "none") toast("✓ Tu as déjà la dernière version (" + u.version + ").");
+      else if (u.state === "error") toast(u.error || "Impossible de vérifier les mises à jour.");
+      else updRender(u);
+      return;
+    }
+  }
+};
+function updInitialCheck(){ let n = 0; const go = async () => { const u = await api("/api/update/status", {}); if (u.state === "available") return updRender(u); if (++n < 6 && ["idle", "checking"].includes(u.state)) setTimeout(go, 1500); }; setTimeout(go, 3000); }
+
+// ---- édition directe par double-clic sur l'aperçu
+function closeEditor(){
+  const ed = $("ed"); if (ed.classList.contains("hide")) return;
+  ed.classList.add("hide"); ui.edKey = null;
+  document.querySelectorAll(".hs.act").forEach(h => h.classList.remove("act"));
+}
+function placeEditor(anchor){
+  const ed = $("ed"); ed.classList.remove("hide");
+  const w = ed.offsetWidth, h = ed.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+  let left = clamp(anchor.left, 8, Math.max(8, vw - w - 8));
+  let top = anchor.bottom + 8;
+  if (top + h > vh - 8) top = anchor.top - h - 8;
+  if (top < 8) top = clamp(vh - h - 8, 8, vh);
+  ed.style.left = left + "px"; ed.style.top = top + "px";
+}
+function openEditor(t, hs){
+  closeEditor();
+  const ed = $("ed"); $("ed-t").textContent = t.label;
+  const box = $("ed-f"); box.innerHTML = "";
+  let first = null;
+  t.fields.forEach(f => {
+    const lab = document.createElement("label"); lab.textContent = f.label; box.appendChild(lab);
+    const el = document.createElement(f.multiline ? "textarea" : "input");
+    if (f.multiline) el.rows = clamp((f.value.split("\n").length) + 1, 2, 9); else el.type = "text";
+    el.value = f.value;
+    el.addEventListener("input", () => {
+      S[f.key] = el.value;
+      const side = $(f.key); if (side) side.value = el.value;
+      if (f.key === "isbn") isbnMsg();
+      schedule();
+    });
+    el.addEventListener("keydown", ev => {
+      if (ev.key === "Enter" && (!f.multiline || ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); closeEditor(); }
+    });
+    box.appendChild(el); if (!first) first = el;
+  });
+  $("ed-h").textContent = "Entrée (Ctrl+Entrée dans un texte long) ou Échap pour fermer · l'aperçu se met à jour en direct.";
+  ui.edKey = t.label; hs.classList.add("act");
+  placeEditor(hs.getBoundingClientRect());
+  if (first) { first.focus(); first.select && !first.value.includes("\n") && first.select(); }
+}
+function openColorPop(x, y){
+  closeEditor();
+  $("ed-t").textContent = "Couleur du livre";
+  const box = $("ed-f"); box.innerHTML = "";
+  allColors().forEach(g => {
+    const wrap = document.createElement("div"); wrap.className = "swgroup"; wrap.innerHTML = `<div class="t">${esc(g.group)}</div>`;
+    const sw = document.createElement("div"); sw.className = "sw";
+    g.colors.forEach(c => {
+      const b = document.createElement("button"); b.style.background = c.hex; b.title = `${c.name} · ${c.hex}`;
+      if (c.hex.toLowerCase() === (S.color || "").toLowerCase()) b.classList.add("on");
+      b.onclick = () => { S.color = c.hex; fillForm(); schedule(); closeEditor(); };
+      sw.appendChild(b);
+    });
+    wrap.appendChild(sw); box.appendChild(wrap);
+  });
+  $("ed-h").textContent = "Clique sur une couleur · Échap pour fermer.";
+  placeEditor({left: x - 20, top: y, bottom: y + 4});
+}
+$("ed-x").onclick = closeEditor;
+document.addEventListener("pointerdown", e => {
+  const ed = $("ed"); if (ed.classList.contains("hide")) return;
+  if (!ed.contains(e.target) && !(e.target.closest && e.target.closest(".hs"))) closeEditor();
+});
+$("showhs").onchange = e => $("faces").classList.toggle("showhs", e.target.checked);
+
+async function bigView(i){
+  const names = ["1re de couverture", "4e de couverture", "Dos"];
+  $("mv-title").textContent = names[i]; $("mv-faces").innerHTML = "Chargement…"; show("m-view");
+  try {
+    const r = await api("/api/preview", {params: params(), dpi: 220, only: i});
+    $("mv-faces").innerHTML = r.faces.map(f => `<img src="data:image/png;base64,${f.png}">`).join("");
+  } catch (e) { $("mv-faces").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+
+// ---- recadrage de l'illustration (glisser / molette)
+let qBusy = false, qPending = false;
+async function quickFront(){
+  if (qBusy) { qPending = true; return; }
+  qBusy = true;
+  try {
+    do {
+      qPending = false;
+      const r = await api("/api/preview", {params: params(), dpi: 130, only_front: true});
+      ui.hot = r.hot; ui.warnings = r.warnings; ui.texts = r.texts || [];
+      if (lastFaces) lastFaces[0] = r.faces[0];
+      const im = $("face0"); if (im) im.src = "data:image/png;base64," + r.faces[0].png;
+    } while (qPending);
+  } catch (e) {} finally { qBusy = false; }
+}
+function setZoom(z){
+  S.ill_zoom = clamp(z, 1, 6); syncZoomUi(); schedule(); quickFront();
+}
+function attachPan(ov, imgEl){
+  let drag = null;
+  const range = (h, axis) => {            // plage utile du point de focale (sinon zone morte au bord)
+    const box = axis === 0 ? h.w * h.W : h.h * h.H, size = h.disp[axis];
+    if (size <= box + 1e-6) return null;
+    const m = (box / 2) / size; return [m, 1 - m];
+  };
+  ov.addEventListener("pointerdown", e => {
+    e.preventDefault(); ov.setPointerCapture(e.pointerId);
+    drag = {x: e.clientX, y: e.clientY, fx: S.ill_x == null ? .5 : S.ill_x, fy: S.ill_y == null ? .5 : S.ill_y};
+    ov.style.cursor = "grabbing";
+  });
+  ov.addEventListener("pointermove", e => {
+    if (!drag || !ui.hot) return;
+    const h = ui.hot, pxmm = imgEl.getBoundingClientRect().width / h.W;
+    const rx = range(h, 0), ry = range(h, 1);
+    if (rx) S.ill_x = clamp(clamp(drag.fx, rx[0], rx[1]) - (e.clientX - drag.x) / pxmm / h.disp[0], rx[0], rx[1]);
+    if (ry) S.ill_y = clamp(clamp(drag.fy, ry[0], ry[1]) - (e.clientY - drag.y) / pxmm / h.disp[1], ry[0], ry[1]);
+    schedule(); quickFront();
+  });
+  const end = () => { drag = null; ov.style.cursor = ""; };
+  ov.addEventListener("pointerup", end); ov.addEventListener("pointercancel", end);
+  ov.addEventListener("wheel", e => { e.preventDefault(); setZoom((S.ill_zoom || 1) * (e.deltaY < 0 ? 1.1 : 1 / 1.1)); }, {passive: false});
+}
+$("ill-zoom").addEventListener("input", e => setZoom(+e.target.value / 100));
+$("ill-fill").onclick = () => { S.ill_x = S.ill_y = .5; setZoom((ui.hot && ui.hot.cover) || 1); };
+$("ill-fit").onclick = () => { S.ill_x = S.ill_y = .5; setZoom(1); };
+$("ill-center").onclick = () => { S.ill_x = S.ill_y = .5; schedule(); quickFront(); };
+
+// ---------------------------------------------------------------- événements du formulaire
+TEXT_FIELDS.forEach(k => { const el = $(k); if (el) el.addEventListener("input", () => {
+  S[k] = el.value; if (k === "isbn") isbnMsg();
+  schedule(); }); });
+
+
+$("ill_tint").addEventListener("change", e => { S.ill_tint = e.target.checked; colHint(); schedule(); });
+$("spine_mm").addEventListener("input", e => { S.spine_mm = parseFloat(e.target.value) || 0; schedule(); });
+$("hex").addEventListener("input", e => {
+  let v = e.target.value.trim(); if (v && v[0] !== "#") v = "#" + v;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) { S.color = v.toUpperCase(); $("chip").style.background = S.color; renderPalette(); schedule(); }
+});
+document.querySelectorAll("#seg-type button").forEach(b => b.onclick = () => switchType(b.dataset.v));
+document.querySelectorAll("input[name=logo]").forEach(r => r.onchange = () => { S.logo = r.value; schedule(); });
+document.querySelectorAll("input[name=rond]").forEach(r => r.onchange = () => {
+  if (r.value === "defaut") S.logo_rond = "defaut";
+  else if (r.value === "aucun") S.logo_rond = "aucun";
+  else S.logo_rond = ui.rond_id || "aucun";
+  $("rond-up").classList.toggle("hide", r.value !== "import"); schedule();
+});
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+  ui.view = b.dataset.v; document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b)); drawFaces();
+});
+
+async function upload(file){
+  const r = await fetch("/api/upload", {method: "POST", headers: {"X-Token": TOKEN, "X-Filename": file.name}, body: file});
+  const j = await r.json(); if (!r.ok) throw new Error(j.error); thumbs[j.id] = j.thumb; return j;
+}
+$("ill-btn").onclick = () => $("ill-file").click();
+$("ill-file").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const j = await upload(f); S.illustration = j.id; S.ill_zoom = 1; S.ill_x = S.ill_y = .5; ui.ill_thumb = j.thumb; fillForm(); schedule(); }
+  catch (err) { $("msgs").innerHTML = `<div class="err">Image illisible : ${esc(err.message)}</div>`; }
+  e.target.value = "";
+};
+$("ill-del").onclick = () => { S.illustration = null; ui.ill_thumb = null; fillForm(); schedule(); };
+$("rond-btn").onclick = () => $("rond-file").click();
+$("rond-file").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const j = await upload(f); ui.rond_id = j.id; ui.rond_thumb = j.thumb; S.logo_rond = j.id; fillForm(); schedule(); }
+  catch (err) { $("msgs").innerHTML = `<div class="err">Image illisible : ${esc(err.message)}</div>`; }
+  e.target.value = "";
+};
+
+$("addok").onclick = () => {
+  const hex = $("newcol").value.toUpperCase(); const name = $("newname").value.trim() || ("Couleur " + hex);
+  boot.settings.custom_colors.push({name, hex}); saveSettings();
+  S.color = hex; $("newname").value = ""; $("addbox").classList.remove("open"); fillForm(); schedule();
+};
+
+// ---------------------------------------------------------------- état, types, chargement
+const stateByType = {};
+function switchType(t){
+  if (S.type === t) return;
+  stateByType[S.type] = S;
+  loadParams(stateByType[t] || boot.examples[t], {keepDoc: true}).then(() => { ui.libId = null; ui.dirty = true; docState(); });
+}
+
+async function thumbFor(id){
+  if (thumbs[id]) return thumbs[id];
+  const t = (await api("/api/thumb", {id})).thumb; thumbs[id] = t; return t;
+}
+
+async function loadParams(p, opt){
+  opt = opt || {};
+  S = Object.assign({}, p);
+  ui.ill_thumb = null; ui.rond_thumb = null; ui.rond_id = null;
+  if (S.illustration) { try { ui.ill_thumb = await thumbFor(S.illustration); } catch (e) { S.illustration = null; } }
+  if (S.logo_rond && !["defaut", "aucun"].includes(S.logo_rond)) {
+    try { ui.rond_thumb = await thumbFor(S.logo_rond); ui.rond_id = S.logo_rond; } catch (e) { S.logo_rond = "aucun"; }
+  }
+  stateByType[S.type] = S;
+  if (!opt.keepDoc) { ui.dirty = false; if (!opt.keepLib) ui.libId = null; }
+  fillForm(); schedule(true); histPush();
+}
+
+// ---------------------------------------------------------------- annuler / rétablir
+const hist = {stack: [], idx: -1, timer: null, restoring: false};
+function histSoon(){ if (hist.restoring) return; clearTimeout(hist.timer); hist.timer = setTimeout(histPush, 600); }
+function histPush(){
+  clearTimeout(hist.timer); hist.timer = null;
+  if (hist.restoring) return;
+  const j = JSON.stringify(S);
+  if (hist.stack[hist.idx] === j) { histBtns(); return; }
+  hist.stack = hist.stack.slice(0, hist.idx + 1); hist.stack.push(j);
+  if (hist.stack.length > 100) hist.stack.shift();
+  hist.idx = hist.stack.length - 1; histBtns();
+}
+function histBtns(){ $("b-undo").disabled = hist.idx <= 0; $("b-redo").disabled = hist.idx >= hist.stack.length - 1; }
+async function histGo(d){
+  histPush();
+  const i = hist.idx + d; if (i < 0 || i >= hist.stack.length) return;
+  hist.idx = i; hist.restoring = true;
+  try {
+    const p = JSON.parse(hist.stack[i]);
+    S = p; stateByType[S.type] = S;
+    ui.ill_thumb = S.illustration ? await thumbFor(S.illustration).catch(() => null) : null;
+    ui.rond_id = null; ui.rond_thumb = null;
+    if (S.logo_rond && !["defaut", "aucun"].includes(S.logo_rond)) { ui.rond_id = S.logo_rond; ui.rond_thumb = await thumbFor(S.logo_rond).catch(() => null); }
+    ui.dirty = true; fillForm(); schedule(true);
+  } finally { hist.restoring = false; histBtns(); }
+}
+$("b-undo").onclick = () => histGo(-1);
+$("b-redo").onclick = () => histGo(1);
+document.addEventListener("keydown", e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  const t = e.target && e.target.tagName;
+  if (t === "INPUT" || t === "TEXTAREA" || t === "SELECT") return;     // dans un champ : annulation native du champ
+  const k = e.key.toLowerCase();
+  if (k === "z" && !e.shiftKey) { e.preventDefault(); histGo(-1); }
+  else if (k === "y" || (k === "z" && e.shiftKey)) { e.preventDefault(); histGo(1); }
+});
+
+// ---------------------------------------------------------------- brouillon automatique
+function saveDraft(){
+  if (ui.draftHold || !boot) return;
+  api("/api/draft/save", {params: params()}).catch(() => {});
+}
+window.addEventListener("pagehide", () => {
+  if (!ui.draftHold && boot) navigator.sendBeacon("/api/draft/save?t=" + TOKEN, new Blob([JSON.stringify({params: params()})], {type: "application/json"}));
+  navigator.sendBeacon("/api/bye?t=" + TOKEN, "{}");
+});
+
+// ---------------------------------------------------------------- en-tête
+$("b-new").onclick = () => { if (confirm("Vider tous les champs ?")) loadParams(Object.assign({}, boot.blanks[S.type], {color: S.color, format: S.format})); };
+$("b-example").onclick = () => loadParams(boot.examples[S.type]);
+$("b-quit").onclick = async () => {
+  const msg = ui.dirty ? "Cette couverture n'est pas enregistrée (un brouillon est gardé automatiquement).\nFermer le générateur ?" : "Fermer le générateur ?";
+  if (!confirm(msg)) return;
+  saveDraft(); try { await api("/api/quit"); } catch (e) {}
+  document.body.innerHTML = "<p style='padding:40px;font-size:16px'>Le générateur est fermé. Tu peux fermer cet onglet.</p>";
+};
+$("b-save").onclick = async () => {
+  try {
+    const r = await api("/api/lib/save", {params: params(), id: ui.libId});
+    ui.libId = r.id; ui.dirty = false; docState(); toast("✓ Enregistrée dans la bibliothèque");
+  } catch (e) { toast("Enregistrement impossible : " + e.message); }
+};
+
+document.addEventListener("keydown", e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === "s") { e.preventDefault(); $("b-save").click(); }
+  else if (k === "enter") { e.preventDefault(); doGenerate(); }
+});
+
+// ---------------------------------------------------------------- bibliothèque
+let libItems = [];
+async function openLib(){
+  show("m-lib"); $("lib-q").value = ""; $("lib-grid").innerHTML = "<div class='hint'>Chargement…</div>";
+  try { libItems = (await api("/api/lib/list")).items; } catch (e) { $("lib-grid").innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
+  renderLib();
+}
+function renderLib(){
+  const q = $("lib-q").value.trim().toLowerCase();
+  const items = libItems.filter(m => !q || (m.titre + " " + m.auteur).toLowerCase().includes(q));
+  const box = $("lib-grid");
+  if (!items.length) { box.innerHTML = `<div class="hint">${libItems.length ? "Aucun résultat." : "Aucune couverture enregistrée pour l'instant. Clique sur « Enregistrer » pour ajouter la couverture en cours."}</div>`; return; }
+  box.innerHTML = "";
+  for (const m of items) {
+    const c = document.createElement("div"); c.className = "lcard";
+    const fmt = (m.format || "").replace("x", " × ");
+    const date = new Date((m.updated || 0) * 1000).toLocaleDateString("fr-FR", {day: "numeric", month: "short", year: "numeric"});
+    c.innerHTML = `<div class="th" style="background-image:url(${m.thumb})"></div><b>${esc(m.titre)}</b>
+      <div class="hint" style="margin:0">${esc(m.auteur)}</div>
+      <div class="hint" style="margin:0"><span class="swatch" style="background:${esc(m.color)}"></span>${m.type === "B" ? "Malgache" : "Droit"} · ${esc(fmt)} · ${esc(date)}</div>
+      <div class="btns"><button class="btn primary" data-a="open">Ouvrir</button><button class="btn" data-a="dup">Dupliquer</button>
+      <button class="btn" data-a="exp" title="Exporter dans un fichier">⭳</button><button class="btn" data-a="del" title="Supprimer">🗑</button></div>`;
+    c.querySelector("[data-a=open]").onclick = () => libOpen(m, false);
+    c.querySelector("[data-a=dup]").onclick = () => libOpen(m, true);
+    c.querySelector("[data-a=exp]").onclick = async () => { try { downloadJson(await api("/api/lib/export", {id: m.id}), m.titre); } catch (e) { toast(e.message); } };
+    c.querySelector("[data-a=del]").onclick = async () => {
+      if (!(await confirmBox("Supprimer cette couverture ?", `« ${esc(m.titre)} » sera retirée de la bibliothèque (les fichiers déjà générés ne sont pas touchés).`, "Supprimer", "Annuler"))) return;
+      await api("/api/lib/delete", {id: m.id}); libItems = libItems.filter(x => x.id !== m.id);
+      if (ui.libId === m.id) { ui.libId = null; docState(); }
+      renderLib();
+    };
+    box.appendChild(c);
+  }
+}
+async function libOpen(m, copy){
+  try {
+    const r = await api("/api/lib/load", {id: m.id});
+    await loadParams(r.params, {keepLib: true});
+    ui.libId = copy ? null : m.id; ui.dirty = copy; docState();
+    hide("m-lib");
+    toast(copy ? "Copie ouverte : modifie-la puis « Enregistrer » pour l'ajouter à la bibliothèque." : "« " + m.titre + " » ouverte.");
+  } catch (e) { toast("Ouverture impossible : " + e.message); }
+}
+function downloadJson(doc, name){
+  const fn = ((name || "couverture").replace(/[\\/:*?"<>|\n]+/g, " ").trim().slice(0, 60) || "couverture") + ".fiche-cmpl.json";
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(doc)], {type: "application/json"})); a.download = fn;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+$("b-lib").onclick = openLib;
+$("ml-x").onclick = () => hide("m-lib");
+$("lib-q").addEventListener("input", renderLib);
+$("lib-export").onclick = async () => { downloadJson(await api("/api/fiche/export", {params: params()}), S.titre || S.auteur); };
+$("lib-import").onclick = () => $("f-fiche").click();
+$("f-fiche").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const doc = JSON.parse(await f.text()); const r = await api("/api/fiche/import", doc); await loadParams(r.params); hide("m-lib"); toast("Fiche importée."); }
+  catch (err) { toast("Fiche illisible : " + err.message); }
+  e.target.value = "";
+};
+
+// ---------------------------------------------------------------- dossier / génération
+$("browse").onclick = async () => {
+  const r = await api("/api/browse", {initial: $("out_dir").value});
+  if (r.path) { $("out_dir").value = r.path; saveSettings(); }
+};
+$("out_dir").addEventListener("change", saveSettings);
+$("bleed").addEventListener("input", schedule);
+
+let generating = false;
+async function doGenerate(){
+  if (generating) return;
+  generating = true; closeEditor();
+  const btns = [$("gen"), $("gen-top")]; btns.forEach(b => b.disabled = true);
+  try {
+    await flush();
+    const bad = (ui.warnings || []).filter(w => w.level !== "info");
+    if (bad.length) {
+      const ok = await confirmBox("Vérifie avant de générer", `<div>${warningsHtml(bad)}</div><div class="hint">Tu peux corriger puis générer, ou générer quand même.</div>`, "Générer quand même", "Retour");
+      if (!ok) return;
+    }
+    btns.forEach(b => b.textContent = "Génération en cours…");
+    const r = await api("/api/generate", {params: params(), out_dir: $("out_dir").value, name: $("fname").value,
+      png: $("w_png").checked, pptx: $("w_pptx").checked, dpi: +$("dpi").value,
+      pdf: $("w_pdf").checked, bleed: parseFloat($("bleed").value) || 0, marks: $("w_marks").checked});
+    const sep = r.folder.includes("\\") ? "\\" : "/";
+    $("d-title").textContent = "✓ Couverture créée";
+    $("d-body").innerHTML = `<div class="hint" style="margin:0">Dans le dossier</div><code class="path">${esc(r.folder)}</code>
+      <ul class="done-files">${r.files.map(f => `<li>${esc(f.split(/[\\/]/).pop())}</li>`).join("")}</ul>`;
+    $("d-foot").classList.remove("hide");
+    $("d-pptx").classList.toggle("hide", !r.pptx);
+    $("d-pptx").onclick = () => api("/api/open_file", {path: r.pptx}).then(x => { if (!x.opened) toast("Impossible d'ouvrir le PowerPoint : ouvre-le depuis le dossier."); }).catch(e => toast(e.message));
+    $("d-folder").onclick = () => api("/api/open_folder", {path: r.folder});
+    show("m-done");
+  } catch (e) {
+    $("d-title").textContent = "Impossible de générer";
+    $("d-body").innerHTML = `<div class="err">${esc(e.message)}</div>`;
+    $("d-foot").classList.add("hide"); show("m-done");
+  } finally {
+    generating = false; btns.forEach(b => { b.disabled = false; b.textContent = "Générer les fichiers"; });
+  }
+}
+$("gen").onclick = doGenerate; $("gen-top").onclick = doGenerate;
+$("d-x").onclick = () => hide("m-done");
+
+// ---------------------------------------------------------------- lot Excel
+const B = {job: null, rows: [], plan: {}, sel: new Set(), done: new Set(), path: null, file: null, polling: false, running: false};
+
+function openBatch(){
+  $("m_out_dir").value = $("out_dir").value;
+  $("m_png").checked = $("w_png").checked; $("m_pptx").checked = $("w_pptx").checked; $("m_pdf").checked = $("w_pdf").checked;
+  show("m-batch"); sum3();
+}
+$("b-batch").onclick = openBatch;
+$("mb-x").onclick = () => { if (B.running && !confirm("La création est en cours. Fermer quand même ? (elle continue en arrière-plan)")) return; hide("m-batch"); };
+
+// -- étape 1 : modèle
+$("b-tpl").onclick = async () => {
+  const btn = $("b-tpl"), res = $("b-tpl-res"); btn.disabled = true; res.innerHTML = "Création du modèle…";
+  try {
+    const r = await api("/api/batch/template_save", {out_dir: $("m_out_dir").value || $("out_dir").value});
+    res.innerHTML = `<div class="ok" style="color:var(--ok);font-weight:600">✓ Modèle créé${r.opened ? " et ouvert dans Excel" : ""}.</div>
+      <div class="hint">Fichier : <code class="path">${esc(r.path)}</code><br>Remplis l'onglet « Livres », enregistre (Ctrl + S), ferme Excel, puis passe à l'étape 2. Mets tes images (illustrations) dans le même dossier.</div>
+      <div style="margin-top:6px"><button class="btn" id="b-tpl-dir">Ouvrir le dossier</button></div>`;
+    $("b-tpl-dir").onclick = () => api("/api/open_folder", {path: r.folder});
+    if (!r.opened) res.innerHTML += `<div class="warn" style="margin-top:8px">Excel ne s'est pas ouvert tout seul : ouvre le fichier depuis le dossier ci-dessus.</div>`;
+  } catch (e) {
+    res.innerHTML = `<div class="err">Impossible de créer le modèle : ${esc(e.message)}</div>`;
+  } finally { btn.disabled = false; }
+};
+$("b-tpl-alt").innerHTML = `<a href="#" id="b-tpl-dl">ou le télécharger avec le navigateur</a>`;
+$("b-tpl-dl").onclick = async ev => {
+  ev.preventDefault();
+  try {
+    const r = await fetch("/api/batch/template", {headers: {"X-Token": TOKEN}});
+    if (!r.ok) throw new Error((await r.json()).error || r.statusText);
+    const a = document.createElement("a"); a.href = URL.createObjectURL(await r.blob()); a.download = "Modele-couvertures-CMPL.xlsx";
+    document.body.appendChild(a); a.click(); a.remove(); toast("Modèle téléchargé (dossier Téléchargements).");
+  } catch (e) { $("b-tpl-res").innerHTML = `<div class="err">Téléchargement impossible : ${esc(e.message)}</div>`; }
+};
+
+// -- étape 2 : import et vérification
+$("browse2").onclick = async () => { const r = await api("/api/browse", {initial: $("img_dir").value || $("out_dir").value}); if (r.path) { $("img_dir").value = r.path; if (B.path || B.file) reanalyze(); } };
+$("b-pick").onclick = async () => {
+  let r;
+  try { r = await api("/api/batch/pick_file", {initial: B.path ? B.path.replace(/[\\/][^\\/]*$/, "") : ($("out_dir").value + "")}); }
+  catch (e) { r = {path: null}; }
+  if (r.path === null) { $("batch-file").click(); return; }       // fenêtre indisponible : sélecteur du navigateur
+  if (!r.path) return;
+  analyzePath(r.path);
+};
+$("batch-file").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  B.file = f; B.path = null; analyzeUpload();
+};
+$("b-reload").onclick = () => reanalyze();
+function reanalyze(){ if (B.path) analyzePath(B.path); else if (B.file) analyzeUpload(); }
+
+function resetBatch(label){
+  B.rows = []; B.plan = {}; B.sel = new Set(); B.done = new Set(); B.job = null;
+  $("b-file").innerHTML = label; $("b-summary").innerHTML = ""; $("b-table").innerHTML = ""; hide("b-tablewrap");
+  $("b-run-res").innerHTML = ""; $("st3").classList.add("off");
+  $("b-progress").innerHTML = "Lecture du fichier…";
+}
+async function analyzePath(path){
+  resetBatch(`<code class="path">${esc(path)}</code>`);
+  try {
+    const r = await api("/api/batch/analyze_path", {path, img_dir: $("img_dir").value});
+    B.path = path; B.file = null; show("b-reload"); startPoll(r.job);
+  } catch (e) { $("b-progress").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+async function analyzeUpload(){
+  resetBatch(`<code class="path">${esc(B.file.name)}</code>`); hide("b-reload");
+  try {
+    const r = await fetch("/api/batch/analyze_upload", {method: "POST", headers: {"X-Token": TOKEN, "X-Filename": encodeURIComponent(B.file.name), "X-Img-Dir": encodeURIComponent($("img_dir").value)}, body: B.file});
+    const j = await r.json(); if (!r.ok) throw new Error(j.error);
+    startPoll(j.job);
+  } catch (e) { $("b-progress").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+async function startPoll(job){ B.job = job; B.polling = true; await poll(); }
+async function poll(){
+  if (!B.polling) return;
+  let st;
+  try { st = await api("/api/batch/status", {job: B.job, since: B.rows.length}); }
+  catch (e) { $("b-progress").innerHTML = `<div class="err">${esc(e.message)}</div>`; B.polling = false; return; }
+  B.rows = B.rows.concat(st.rows);
+  if (st.error) { $("b-progress").innerHTML = `<div class="err">${esc(st.error)}</div>`; B.polling = false; return; }
+  if (!st.finished) {
+    const pct = st.total ? Math.round(100 * st.done / st.total) : 0;
+    $("b-progress").innerHTML = `<div>Vérification : livre ${Math.min(st.done + 1, st.total)} / ${st.total} — <b>${esc(st.current)}</b></div><div class="bar"><i style="width:${pct}%"></i></div>`;
+    renderTable(); setTimeout(poll, 400); return;
+  }
+  B.polling = false; $("b-progress").innerHTML = "";
+  B.sel = new Set(B.rows.filter(r => r.ok).map(r => r.line));
+  await loadPlan(); renderTable(); renderSummary();
+}
+async function loadPlan(){
+  try { B.plan = (await api("/api/batch/folders", {job: B.job, out_dir: $("m_out_dir").value})).plan; } catch (e) { B.plan = {}; }
+}
+
+function renderSummary(){
+  const ok = B.rows.filter(r => r.ok), ko = B.rows.length - ok.length;
+  const warn = ok.filter(r => r.warn.some(w => w.level !== "info")).length;
+  let h = `<b>${B.rows.length}</b> ligne(s) lue(s) : <span class="tag ok">✓ ${ok.length - warn} prêt(s)</span>`;
+  if (warn) h += ` <span class="tag warn">⚠ ${warn} avec alertes</span>`;
+  if (ko) h += ` <span class="tag bad">✗ ${ko} en erreur</span>`;
+  if (ko) h += `<div class="hint" style="margin-top:6px">Les lignes en erreur ne seront pas créées. Corrige-les dans Excel, enregistre, puis clique sur « ↻ Relire le fichier ».</div>`;
+  $("b-summary").innerHTML = h;
+  $("st3").classList.toggle("off", !ok.length);
+  sum3();
+}
+
+function renderTable(){
+  if (!B.rows.length) return;
+  show("b-tablewrap");
+  const t = $("b-table");
+  const okRows = B.rows.filter(r => r.ok);
+  let h = `<thead><tr><th><input type="checkbox" id="b-all" ${okRows.length && okRows.every(r => B.sel.has(r.line)) ? "checked" : ""} title="Tout cocher / décocher"></th><th>Aperçu</th><th>Livre</th><th>Modèle</th><th>Couleur</th><th>Dos</th><th>Dossier créé</th><th>État</th></tr></thead><tbody>`;
+  for (const r of B.rows) {
+    const on = B.sel.has(r.line), pl = B.plan[r.line];
+    if (!r.ok) {
+      h += `<tr class="bad"><td></td><td></td><td><b>${esc(r.titre)}</b><div class="small">Ligne ${r.line} du tableau</div></td><td colspan="4"></td>
+        <td><span class="tag bad">✗ Erreur</span><div class="small fail">${esc(r.error)}</div></td></tr>`;
+      continue;
+    }
+    const lv = {error: 0, warn: 0};
+    r.warn.forEach(w => { if (w.level in lv) lv[w.level]++; });
+    const tag = lv.error ? `<span class="tag bad">⚠ À vérifier</span>` : (lv.warn ? `<span class="tag warn">⚠ ${lv.warn} alerte(s)</span>` : `<span class="tag ok">✓ Prêt</span>`);
+    const wl = r.warn.map(w => `<div class="small ${w.level === "error" ? "fail" : ""}">${ICON[w.level] || "ℹ"} ${esc(w.text)}</div>`).join("");
+    const folder = pl ? `📁 ${esc(pl.folder)}/${B.done.has(r.line) ? `<div><span class="tag ok">✓ créé</span></div>` : (pl.exists ? `<div><span class="tag warn">existe déjà : fichiers remplacés</span></div>` : "")}` : "";
+    h += `<tr class="${on ? "" : "off"}" data-line="${r.line}"><td><input type="checkbox" class="b-ck" ${on ? "checked" : ""}></td>
+      <td>${r.thumb ? `<img src="${r.thumb}" data-view="${r.line}" title="Cliquer pour voir en grand">` : ""}</td>
+      <td><b>${esc(r.titre)}</b><div class="small">${esc(r.auteurs)}</div><div class="small">Ligne ${r.line} du tableau</div></td>
+      <td>${r.type === "B" ? "Malgache" : "Droit"}<div class="small">${esc(r.format.replace("x", " × "))}</div></td>
+      <td><span class="swatch" style="background:${esc(r.color)}"></span><span class="small">${esc(r.color)}</span></td>
+      <td>${r.spine} mm</td><td>${folder}</td><td>${tag}${wl}</td></tr>`;
+  }
+  t.innerHTML = h + "</tbody>";
+  const all = $("b-all");
+  if (all) all.onchange = () => { okRows.forEach(r => all.checked ? B.sel.add(r.line) : B.sel.delete(r.line)); renderTable(); sum3(); };
+  t.querySelectorAll(".b-ck").forEach(ck => ck.onchange = () => {
+    const line = +ck.closest("tr").dataset.line; ck.checked ? B.sel.add(line) : B.sel.delete(line); renderTable(); sum3();
+  });
+  t.querySelectorAll("img[data-view]").forEach(im => im.onclick = () => viewRow(+im.dataset.view));
+}
+
+async function viewRow(line){
+  const row = B.rows.find(r => r.line === line);
+  $("mv-title").textContent = row ? row.titre : "Aperçu"; $("mv-faces").innerHTML = "Chargement…"; show("m-view");
+  try {
+    const r = await api("/api/batch/row_preview", {job: B.job, line});
+    $("mv-faces").innerHTML = r.faces.slice(0, 3).map(f => `<img src="data:image/png;base64,${f.png}">`).join("");
+  } catch (e) { $("mv-faces").innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+}
+$("mv-x").onclick = () => hide("m-view");
+
+// -- étape 3 : création
+function bOpts(){
+  return {out_dir: $("m_out_dir").value, png: $("m_png").checked, pptx: $("m_pptx").checked, pdf: $("m_pdf").checked,
+    dpi: +$("dpi").value, bleed: parseFloat($("bleed").value) || 0, marks: $("w_marks").checked};
+}
+function sum3(){
+  const n = B.sel.size, o = bOpts();
+  const kinds = [o.png && "images PNG", o.pptx && "PowerPoint", o.pdf && "PDF à plat"].filter(Boolean);
+  $("b-sum3").innerHTML = n
+    ? `<b>${n}</b> livre(s) sélectionné(s) → <code class="path">${esc(o.out_dir)}\\<i>nom du livre</i>\\</code><br>Fichiers : ${kinds.length ? kinds.join(", ") : "<b class='fail'>aucun format coché</b>"} · ${o.dpi} dpi${o.pdf ? ` · fonds perdus ${o.bleed} mm` : ""} <span class="hint">(qualité et fonds perdus : réglages de la section 6)</span>`
+    : "Aucun livre sélectionné.";
+  $("b-run").textContent = n ? `Créer ${n} couverture${n > 1 ? "s" : ""}` : "Créer";
+  $("b-run").disabled = !n || !kinds.length;
+}
+["m_png", "m_pptx", "m_pdf"].forEach(id => $(id).onchange = () => { $(id.replace("m_", "w_")).checked = $(id).checked; sum3(); });
+$("m_out_dir").addEventListener("change", async () => { $("out_dir").value = $("m_out_dir").value; saveSettings(); if (B.job) { await loadPlan(); renderTable(); } sum3(); });
+$("m_browse").onclick = async () => {
+  const r = await api("/api/browse", {initial: $("m_out_dir").value});
+  if (r.path) { $("m_out_dir").value = r.path; $("out_dir").value = r.path; saveSettings(); if (B.job) { await loadPlan(); renderTable(); } sum3(); }
+};
+$("b-run").onclick = async () => {
+  const lines = [...B.sel].sort((a, b) => a - b);
+  const existing = lines.filter(l => B.plan[l] && B.plan[l].exists).length;
+  if (existing && !(await confirmBox("Dossiers déjà présents", `${existing} dossier(s) existent déjà : les fichiers portant le même nom seront remplacés.`, "Créer quand même", "Annuler"))) return;
+  B.running = true; $("b-run").disabled = true; const res = $("b-run-res"); res.innerHTML = "Démarrage…";
+  try {
+    await api("/api/batch/run", {job: B.job, lines, opts: bOpts()});
+    let since = 0, results = [];
+    for (;;) {
+      const st = await api("/api/batch/status", {job: B.job, since: B.rows.length, since_run: since});
+      results = results.concat(st.run_results); since = st.n_run_results;
+      if (!st.run_finished) {
+        const pct = st.run_total ? Math.round(100 * st.run_done / st.run_total) : 0;
+        res.innerHTML = `<div>Création : ${Math.min(st.run_done + 1, st.run_total)} / ${st.run_total} — <b>${esc(st.run_current)}</b></div><div class="bar"><i style="width:${pct}%"></i></div>`;
+        await new Promise(r => setTimeout(r, 500)); continue;
+      }
+      break;
+    }
+    const ok = results.filter(x => x.ok), ko = results.filter(x => !x.ok);
+    ok.forEach(x => B.done.add(x.line));
+    let h = `<div class="ok" style="color:var(--ok);font-weight:600">✓ ${ok.length} couverture(s) créée(s)${ko.length ? ` · <span class="fail">${ko.length} en erreur</span>` : ""}</div>`;
+    h += `<ul style="padding-left:18px;margin:6px 0">${ok.map(x => `<li>📁 <b>${esc(x.folder)}</b> — ${x.files} fichiers <a href="#" data-open="${esc(x.path)}">ouvrir</a></li>`).join("")}</ul>`;
+    if (ko.length) h += `<ul class="fail" style="padding-left:18px">${ko.map(x => `<li>${esc(x.name)} : ${esc(x.error)}</li>`).join("")}</ul>`;
+    h += `<div style="margin-top:8px"><button class="btn" id="b-open-all">Ouvrir le dossier principal</button></div>`;
+    res.innerHTML = h;
+    res.querySelectorAll("[data-open]").forEach(a => a.onclick = ev => { ev.preventDefault(); api("/api/open_folder", {path: a.dataset.open}); });
+    $("b-open-all").onclick = () => api("/api/open_folder", {path: $("m_out_dir").value});
+    await loadPlan(); renderTable();
+  } catch (e) { res.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
+  finally { B.running = false; sum3(); }
+};
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (!$("ed").classList.contains("hide")) { closeEditor(); return; }
+  if (!$("m-confirm").classList.contains("hide")) { $("c-cancel").click(); return; }
+  for (const id of ["m-done", "m-view", "m-lib", "m-batch"]) if (!$(id).classList.contains("hide")) { $({"m-done": "d-x", "m-view": "mv-x", "m-lib": "ml-x", "m-batch": "mb-x"}[id]).click(); return; }
+});
+
+// ---------------------------------------------------------------- démarrage
+(async () => {
+  const r = await fetch("/api/bootstrap?t=" + TOKEN); boot = await r.json();
+  const dl = $("dl-coll"); boot.collections.concat(boot.settings.custom_collections || []).forEach(c => { const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
+  $("out_dir").value = boot.settings.out_dir;
+  $("ver").textContent = "Version " + boot.version; updInitialCheck();
+  await loadParams(boot.examples.A);
+  try {
+    const d = await api("/api/draft/load");
+    if (d.params) {
+      ui.draftHold = true;
+      $("draft-title").textContent = (d.params.titre || d.params.auteur || d.params.auteurs || "sans titre").replace(/\n/g, " ").slice(0, 60);
+      show("draft-banner");
+      $("draft-yes").onclick = async () => { ui.draftHold = false; hide("draft-banner"); await loadParams(d.params); ui.dirty = true; docState(); saveDraft(); };
+      $("draft-no").onclick = () => { ui.draftHold = false; hide("draft-banner"); };
+    }
+  } catch (e) {}
+  fetch("/api/ping");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+GENERATEUR DE COUVERTURES CMPL
+==============================
+
+Pour ton pere (utilisation)
+---------------------------
+1. Double-clic sur "Couvertures CMPL.exe". Une page s'ouvre dans le navigateur (tout reste sur l'ordinateur).
+   Rien a installer : ni Python, ni autre chose.
+2. Choisir le modele (Droit ou Litterature malgache), le format, la couleur.
+3. Remplir les textes : l'apercu se met a jour en direct (1re, 4e, dos et "A plat").
+4. Cliquer sur "Generer les fichiers" (bouton blanc en haut, toujours visible ; Ctrl+Entree marche aussi).
+   Un dossier au nom du livre est cree dans le dossier de sortie, avec :
+   - 3 images PNG (1re, 4e de couverture, dos), a la taille reelle du livre
+   - 1 fichier PowerPoint (.pptx, 3 diapositives) avec de vraies zones de texte modifiables
+   - option : PDF "a plat" pour l'imprimeur (4e + dos + 1re, avec fonds perdus et reperes de coupe)
+   A la fin, une fenetre propose "Ouvrir le PowerPoint" et "Ouvrir le dossier".
+Pour quitter : bouton "Quitter" ou fermer l'onglet.
+
+Boutons en haut
+---------------
+- Ctrl+S : enregistre la couverture dans la bibliotheque.
+- Fleches ↶ ↷ : annuler / retablir la derniere modification (Ctrl+Z / Ctrl+Y quand on n'est pas dans un champ).
+- Nouvelle couverture : vide les champs. Exemple : recharge l'exemple du modele.
+- Bibliotheque : toutes les couvertures enregistrees, avec miniature et recherche.
+    Ouvrir = reprendre pour modifier. Dupliquer = en faire une copie (nouvelle edition, tome suivant...).
+    Un fichier peut aussi etre exporte / importe (pour sauvegarder ou transmettre une couverture).
+- Enregistrer : ajoute la couverture a la bibliotheque (ou met a jour celle qui est ouverte).
+- Lot Excel : voir plus bas.
+- Un brouillon est garde automatiquement : si le programme se ferme par accident, il propose de reprendre
+  la couverture en cours au prochain lancement.
+
+Modifier un texte directement sur l'apercu
+------------------------------------------
+Double-clic sur un texte de l'apercu (titre, auteurs, texte de 4e, ISBN, titre du dos...) : une petite fenetre
+s'ouvre pres du texte. On tape, l'apercu se met a jour en direct. Entree (ou Ctrl+Entree dans un texte long)
+ou Echap pour fermer. Case "Montrer les zones" : affiche toutes les zones modifiables.
+Double-clic sur le fond de la couverture : choisir une autre couleur. Double-clic sur l'illustration : changer d'image.
+Bouton "Agrandir" sous chaque face : apercu en grand.
+
+Litterature malgache : couleurs et image
+----------------------------------------
+Le modele malgache a sa propre charte (8 couleurs : Rouge sombre, Vert olive, Bleu gris, Beige dore, Rose ambre,
+Gris taupe, Brun sable, Bleu pale). Quand la couleur est claire, le titre est automatiquement assombri.
+L'illustration prend la couleur du livre (case "Colorer l'image avec la couleur du livre", cochee par defaut ;
+decocher pour garder les couleurs d'origine). Excel : colonne "Image coloree" (Oui / Non).
+
+Recadrer l'illustration (modele Litterature malgache)
+-----------------------------------------------------
+Section 5 : apres avoir choisi l'image, un curseur "Cadrage" apparait. Sur l'apercu, glisser l'image pour la
+deplacer, molette pour zoomer. Boutons : "Remplir le cadre", "Image entiere", "Recentrer".
+
+Alertes
+-------
+Sous l'apercu, des messages signalent : texte trop reduit pour tenir, texte qui deborde, ISBN faux,
+image trop peu definie pour l'impression (moins de 200 dpi), dos trop fin... Au moment de generer, une
+fenetre de verification s'affiche s'il y a des alertes (on peut generer quand meme).
+
+Dos
+---
+Le titre et l'auteur du dos se changent dans la section 4 (vides = repris de la 1re). La police du dos est
+volontairement petite. L'epaisseur n'est plus calculee : une valeur par defaut est utilisee (22 mm Droit, 9 mm
+Malgache) ; si l'imprimeur donne l'epaisseur exacte, la saisir dans "Epaisseur du dos (avance)".
+
+PDF a plat pour l'imprimeur
+---------------------------
+Onglet "A plat" : 4e + dos + 1re cote a cote, avec fonds perdus (3 mm par defaut) et, en option, reperes de
+coupe et de pliage. Le PDF contient les boites TrimBox / BleedBox. L'image est incluse sans perte (300 dpi max).
+
+Plusieurs couvertures d'un coup (Lot Excel)
+-------------------------------------------
+Bouton "Lot Excel" en haut. Trois etapes, dans l'ordre :
+ 1. "Creer le modele et l'ouvrir dans Excel" : le fichier est cree dans <dossier de sortie>\Lot Excel\ et
+    s'ouvre. Une ligne = un livre. Onglet "Exemples" : deux livres remplis pour s'inspirer. Onglet "Couleurs" :
+    les noms de la palette. Onglet "Mode d'emploi" : le detail de chaque colonne. Les titres de colonnes
+    ont aussi une bulle d'aide. Mettre les images (colonne Illustration) dans le meme dossier que le fichier.
+ 2. "Choisir mon fichier Excel" : le programme verifie chaque ligne et affiche un tableau avec, pour chaque
+    livre, un apercu (clic pour agrandir), le modele, la couleur, l'epaisseur du dos (par defaut), le dossier qui sera
+    cree et l'etat (Pret / alertes / erreur avec la raison). Les lignes en erreur ne sont pas creees :
+    corriger dans Excel, enregistrer, puis "Relire le fichier". On peut decocher des livres.
+ 3. "Creer N couvertures" : un sous-dossier est cree par livre, a son nom, dans le dossier choisi.
+    (Deux livres de meme nom : "Nom", "Nom (2)".) Les formats de fichiers se choisissent a l'etape 3,
+    la qualite et les fonds perdus dans la section 6.
+
+Mises a jour automatiques
+-------------------------
+Au lancement, le programme verifie en arriere-plan (si internet marche) s'il existe une nouvelle version.
+Si oui, un bandeau jaune apparait : "Nouvelle version X disponible" avec "Mettre a jour" / "Plus tard".
+Un clic sur "Mettre a jour" telecharge la version, la verifie, remplace le programme et le relance tout seul
+(la page se recharge ; les couvertures et la bibliotheque ne sont pas touchees). Rien ne se fait sans clic.
+En bas de page : "Rechercher une mise a jour" pour verifier a la demande. Le programme doit etre dans un
+dossier ou l'utilisateur peut ecrire (Bureau, Documents), pas dans "Program Files".
+Si internet est lent, "Annuler" arrete le telechargement ; on peut reessayer plus tard.
+
+Pour toi (publier une nouvelle version)
+---------------------------------------
+Depot : https://github.com/Bababou92/couverture-cmpl
+1. Modifier NOTES.txt (1-2 lignes sur les nouveautes), envoyer les changements sur GitHub.
+2. Creer et pousser un tag :  git tag v1.1.0   puis   git push origin v1.1.0
+   (le numero du tag devient le numero de version du programme)
+3. GitHub construit tout seul le .exe sur un Windows, lance un auto-test (genere les deux exemples), puis publie
+   "Couvertures-CMPL.exe" + latest.json dans "Releases" (onglet Actions pour suivre, ~5 minutes).
+4. Premiere installation chez ton pere : lui donner le .exe de la page Releases. Ensuite il n'a plus rien a faire.
+Si l'auto-test echoue, la release n'est pas publiee et le journal dans l'onglet Actions dit pourquoi.
+
+Fabriquer le .exe soi-meme (sans GitHub), sur un PC Windows
+-----------------------------------------------------------
+1. Installer Python 3.10 ou plus recent (python.org, cocher "Add python.exe to PATH").
+2. Double-clic sur "creer_exe.bat". A la fin : dist\Couvertures CMPL.exe
+   (sans exe : "lancer.bat" demarre directement le programme)
+   A refaire a chaque nouvelle version du programme.
+3. Icone : "icone.ico" (logo CMPL) est utilisee pour le .exe, "cmpl\web\favicon.png" pour l'onglet du
+   navigateur. Pour en changer, remplacer ces deux fichiers puis relancer creer_exe.bat.
+   Si l'ancienne icone reste affichee sur ton PC, c'est le cache de Windows : copier le .exe sur le Bureau
+   ou redemarrer l'explorateur de fichiers. Sur un autre PC, elle s'affiche normalement.
+
+Au premier lancement sur un autre PC, Windows peut afficher "Windows a protege votre PC" (fichier non signe) :
+cliquer sur "Informations complementaires" puis "Executer quand meme". Si un antivirus le bloque, autoriser le fichier.
+
+Polices : le programme utilise Arial, Times New Roman et Book Antiqua de Windows.
+S'il ne les trouve pas, il prend des polices libres equivalentes (Liberation, TeX Gyre Pagella).
+
+Ou sont les reglages ? %APPDATA%\CMPL-Couvertures\ : reglages.json (couleurs perso, dernier dossier),
+bibliotheque\ (couvertures enregistrees), brouillon.json (reprise automatique).

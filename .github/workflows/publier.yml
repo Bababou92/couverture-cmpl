@@ -1,0 +1,87 @@
+# Publie une nouvelle version : il suffit de pousser un tag, par exemple  v1.1.0
+#   git tag v1.1.0 && git push origin v1.1.0
+# GitHub construit alors « Couvertures-CMPL.exe » sur un Windows, le teste, puis le publie dans « Releases »
+# avec latest.json (c'est ce fichier que le programme lit pour proposer la mise à jour).
+name: Publier une version
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Numéro de version = nom du tag
+        shell: python
+        run: |
+          import os, re
+          v = os.environ["GITHUB_REF_NAME"].lstrip("vV")
+          if not re.fullmatch(r"\d+\.\d+\.\d+", v):
+              raise SystemExit("Le tag doit ressembler à v1.2.3")
+          p = "cmpl/version.py"
+          s = open(p, encoding="utf8").read()
+          s = re.sub(r'VERSION = ".*"', f'VERSION = "{v}"', s)
+          open(p, "w", encoding="utf8").write(s)
+          print("Version :", v)
+
+      - name: Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Construire l'exécutable
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --clean --onefile --noconsole --name "Couvertures-CMPL" `
+            --icon "icone.ico" `
+            --add-data "cmpl/assets;cmpl/assets" --add-data "cmpl/web;cmpl/web" `
+            --collect-data pptx --collect-submodules openpyxl `
+            --hidden-import et_xmlfile --hidden-import tkinter run.py
+
+      - name: Tester l'exécutable (génère les 2 exemples)
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP "selftest.txt"
+          $p = Start-Process -FilePath "dist/Couvertures-CMPL.exe" -ArgumentList @("--selftest", $out) -Wait -PassThru
+          if (Test-Path $out) { Get-Content $out }
+          if ($p.ExitCode -ne 0) { throw "L'auto-test a échoué (code $($p.ExitCode))" }
+
+      - name: Fichier latest.json
+        shell: python
+        run: |
+          import hashlib, json, os
+          exe = "dist/Couvertures-CMPL.exe"
+          sha = hashlib.sha256(open(exe, "rb").read()).hexdigest()
+          tag = os.environ["GITHUB_REF_NAME"]
+          notes = ""
+          if os.path.exists("NOTES.txt"):
+              notes = open("NOTES.txt", encoding="utf8").read().strip()[:1000]
+          data = {
+              "version": tag.lstrip("vV"),
+              "url": f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/releases/download/{tag}/Couvertures-CMPL.exe",
+              "sha256": sha,
+              "size": os.path.getsize(exe),
+              "notes": notes,
+          }
+          json.dump(data, open("dist/latest.json", "w", encoding="utf8"), ensure_ascii=False, indent=2)
+          print(json.dumps(data, ensure_ascii=False, indent=2))
+
+      - name: Créer la release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $notes = "Nouveautés"
+          if (Test-Path NOTES.txt) { $notes = Get-Content NOTES.txt -Raw -Encoding utf8 }
+          gh release create "$env:GITHUB_REF_NAME" "dist/Couvertures-CMPL.exe" "dist/latest.json" `
+            --title "Couvertures CMPL $($env:GITHUB_REF_NAME.TrimStart('v'))" --notes "$notes"
