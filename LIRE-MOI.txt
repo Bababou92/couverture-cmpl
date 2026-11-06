@@ -13,7 +13,7 @@ Pour ton pere (utilisation)
    - 1 fichier PowerPoint (.pptx, 3 diapositives) avec de vraies zones de texte modifiables
    - option : PDF "a plat" pour l'imprimeur (4e + dos + 1re, a la taille exacte)
    A la fin, une fenetre propose "Ouvrir le PowerPoint" et "Ouvrir le dossier".
-Pour quitter : bouton "Quitter" ou fermer l'onglet.
+Pour quitter : fermer l'onglet. Si la couverture n'est pas enregistree, le navigateur demande confirmation.
 
 Boutons en haut
 ---------------

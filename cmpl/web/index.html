@@ -20,7 +20,15 @@
   header button.hgen{background:#fff;color:var(--accent);border:0;font-weight:700;font-size:15px;padding:9px 20px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
   header button.hgen:hover{background:#eaf1fb}
   header button.hgen:disabled{opacity:.7;cursor:wait}
-  header button.hquit{background:none;border-color:transparent;opacity:.75;padding:6px 8px}
+  header button.themesw{position:relative;width:58px;height:30px;padding:0;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);flex:none}
+  header button.themesw:hover{background:rgba(255,255,255,.26)}
+  .themesw .ic{position:absolute;top:7px;width:14px;height:14px;z-index:1;transition:opacity .2s,fill .2s}
+  .themesw .sun{left:7px;fill:#f59e0b;stroke:#f59e0b;opacity:1}
+  .themesw .moon{left:37px;fill:#fff;stroke:none;opacity:.55}
+  .themesw .knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .22s cubic-bezier(.4,.1,.2,1)}
+  html.dark .themesw .knob{transform:translateX(30px);background:#e6edf9}
+  html.dark .themesw .sun{fill:#fff;stroke:none;opacity:.55}
+  html.dark .themesw .moon{fill:#3f68b0;opacity:1}
   header kbd{font:11px Consolas,monospace;opacity:.7;margin-left:4px}
   header button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);padding:6px 11px;border-radius:7px;cursor:pointer;font:inherit}
   header button:hover{background:rgba(255,255,255,.24)}
@@ -230,8 +238,11 @@
     <button id="b-save" title="Enregistrer cette couverture dans la bibliothèque (Ctrl+S)">Enregistrer<kbd>Ctrl+S</kbd></button>
   </div>
   <button id="gen-top" class="hgen" title="Créer les fichiers de cette couverture (Ctrl+Entrée)">Générer les fichiers</button>
-  <button id="b-theme" class="hquit" title="Passer en thème sombre / clair">☾</button>
-  <button id="b-quit" class="hquit" title="Fermer le générateur">Quitter</button>
+  <button id="b-theme" class="themesw" role="switch" aria-checked="false" title="Passer en thème sombre">
+    <svg class="ic sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><g stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg>
+    <svg class="ic moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.9 8.9 0 1 0 11.1 11.1z"/></svg>
+    <i class="knob"></i>
+  </button>
   <input type="file" id="f-fiche" accept=".json,application/json" class="hide">
 </header>
 <div class="banner hide" id="draft-banner"><span>📝 Une couverture en cours a été retrouvée (<b id="draft-title"></b>). Veux-tu la reprendre ?</span>
@@ -818,7 +829,7 @@ function updInitialCheck(){
 // ---------------------------------------------------------------- thème clair / sombre
 function applyTheme(t){
   document.documentElement.classList.toggle("dark", t === "dark");
-  const b = $("b-theme"); if (b) { b.textContent = t === "dark" ? "☀" : "☾"; b.title = t === "dark" ? "Revenir au thème clair" : "Passer en thème sombre"; }
+  const b = $("b-theme"); if (b) { b.setAttribute("aria-checked", t === "dark"); b.title = t === "dark" ? "Revenir au thème clair" : "Passer en thème sombre"; }
 }
 function currentTheme(){ return document.documentElement.classList.contains("dark") ? "dark" : "light"; }
 $("b-theme").onclick = () => {
@@ -1170,6 +1181,10 @@ function saveDraft(){
   if (ui.draftHold || !boot) return;
   api("/api/draft/save", {params: params()}).catch(() => {});
 }
+window.addEventListener("beforeunload", e => {
+  if (!ui.dirty || !boot) return;
+  saveDraft(); e.preventDefault(); e.returnValue = "";     // le navigateur affiche sa propre fenêtre « Quitter le site ? »
+});
 window.addEventListener("pagehide", () => {
   if (!ui.draftHold && boot) navigator.sendBeacon("/api/draft/save?t=" + TOKEN, new Blob([JSON.stringify({params: params()})], {type: "application/json"}));
   navigator.sendBeacon("/api/bye?t=" + TOKEN, "{}");
@@ -1178,12 +1193,6 @@ window.addEventListener("pagehide", () => {
 // ---------------------------------------------------------------- en-tête
 $("b-new").onclick = () => { if (confirm("Vider tous les champs ?")) loadParams(Object.assign({}, boot.blanks[S.type], {color: S.color, format: S.format})); };
 $("b-example").onclick = () => loadParams(boot.examples[S.type]);
-$("b-quit").onclick = async () => {
-  const msg = ui.dirty ? "Cette couverture n'est pas enregistrée (un brouillon est gardé automatiquement).\nFermer le générateur ?" : "Fermer le générateur ?";
-  if (!confirm(msg)) return;
-  saveDraft(); try { await api("/api/quit"); } catch (e) {}
-  document.body.innerHTML = "<p style='padding:40px;font-size:16px'>Le générateur est fermé. Tu peux fermer cet onglet.</p>";
-};
 $("b-save").onclick = async () => {
   try {
     const r = await api("/api/lib/save", {params: params(), id: ui.libId});
