@@ -93,7 +93,8 @@ Pour toi (publier une nouvelle version)
 ---------------------------------------
 Depot : https://github.com/Bababou92/couverture-cmpl
 1. Modifier NOTES.txt (1-2 lignes sur les nouveautes), envoyer les changements sur GitHub.
-2. Sur GitHub : Releases > "Draft a new release" > creer le tag v1.1.0 > "Publish release"
+2. Automatique : changer le numero dans cmpl/version.py et pousser sur main (la release se fait toute seule).
+   Ou a la main, sur GitHub : Releases > "Draft a new release" > creer le tag v1.1.0 > "Publish release"
    (ou : git tag v1.1.0  puis  git push origin v1.1.0). Le numero du tag devient le numero de version.
 3. GitHub construit tout seul le .exe sur un Windows, lance un auto-test (genere les deux exemples), puis publie
    "Couvertures-CMPL.exe" + latest.json dans "Releases" (onglet Actions pour suivre, ~5 minutes).
