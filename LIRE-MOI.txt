@@ -33,6 +33,23 @@ Modifier un texte directement sur l'apercu
 Double-clic sur un texte de l'apercu (titre, auteurs, texte de 4e, ISBN, titre du dos...) : une petite fenetre
 s'ouvre pres du texte. On tape, l'apercu se met a jour en direct. Entree (ou Ctrl+Entree dans un texte long)
 ou Echap pour fermer. Case "Montrer les zones" : affiche toutes les zones modifiables.
+La petite fenetre se deplace : attrape sa barre de titre (double-clic sur la barre = remet la position automatique).
+Droit, 1re de couverture : la taille des noms d'auteurs s'adapte (un seul nom = gros, beaucoup de noms = plus petit).
+Droit, 4e de couverture : champ "Mention" (italique, sous les auteurs), aussi dans le tableau Excel ("Mention 4e").
+
+Signaler un probleme
+--------------------
+Lien "Signaler un probleme" en haut. Si la generation echoue, la fenetre s'ouvre toute seule.
+- "Envoyer par Gmail" / "par WhatsApp" : un petit fichier .zip (la couverture + le detail de l'erreur) est cree dans
+  le dossier "Rapports", copie dans le presse-papiers, et Gmail / WhatsApp s'ouvre avec le message deja ecrit.
+  Il suffit de faire Ctrl+V pour joindre le fichier (ou de le glisser depuis le dossier qui s'ouvre).
+- L'adresse e-mail (et le numero WhatsApp) du destinataire se regle une seule fois, dans "Destinataire".
+- On peut aussi copier ou telecharger uniquement le message d'erreur.
+
+Theme sombre
+------------
+Bouton ☾ / ☀ en haut a droite : change l'interface seulement, jamais les couleurs des couvertures. Le choix est garde.
+
 Double-clic sur le fond de la couverture : choisir une autre couleur. Double-clic sur l'illustration : changer d'image.
 Bouton "Agrandir" sous chaque face : apercu en grand.
 

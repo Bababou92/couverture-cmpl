@@ -1,2 +1,3 @@
+Signaler un probleme (Gmail / WhatsApp), theme sombre, noms d'auteurs a taille adaptee, mention 4e, fenetre de modification deplacable.
 Mises a jour : "Mises a jour" en haut de page, avec une fenetre qui donne le resultat tout de suite.
 Fenetre de proposition au lancement (reactivable depuis cette fenetre).

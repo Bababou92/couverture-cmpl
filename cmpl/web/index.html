@@ -163,13 +163,61 @@
   .upd button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
   .hupd{color:#fff;font-size:12.5px;font-weight:400;opacity:.85;margin-left:8px;text-decoration:underline}
   .hupd:hover{opacity:1}
+  /* en-tête : liens sous le titre */
+  .hleft{display:flex;flex-direction:column;flex:1;min-width:250px;gap:1px}
+  .hleft h1{flex:none;min-width:0}
+  .hlinks{display:flex;gap:6px;flex-wrap:wrap}
+  .hlinks .hupd{margin-left:0;margin-right:12px}
+  /* signaler un problème */
+  .errbox{background:#fde8e8;color:#7f1d1d;border:1px solid #f3bcbc;border-radius:8px;padding:8px 10px;margin:0 0 10px;font:12px/1.4 Consolas,monospace;white-space:pre-wrap;word-break:break-word;max-height:140px;overflow:auto}
+  .rp-send{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .rp-send .btn{flex:1;min-width:190px;padding:11px 12px}
+  .rp-result{margin-top:12px;padding:10px 12px;border-radius:8px;background:#e8f4ec;border:1px solid #b9dcc5;color:#1d4d2f;font-size:13px}
+  .rp-result b{display:block;margin-bottom:3px}
+  .rp-small{margin-top:14px;font-size:12.5px;color:var(--muted)}
+  .rp-small a{color:var(--accent-2)}
+  /* fenêtre d'édition déplaçable */
+  .ed .edh{cursor:move;user-select:none;touch-action:none}
+  .ed .edh b::before{content:"⠿ ";opacity:.45}
+  .ed .edh .xbtn{cursor:pointer}
+  /* thème sombre : seulement l'interface, les aperçus des couvertures ne changent pas */
+  html.dark{--bg:#10141c;--card:#1a202b;--ink:#e4e8ef;--muted:#98a3b6;--line:#2d3545;--accent-2:#6f9ad0;--warn:#f0b865;--warn-bg:#3a2d12;color-scheme:dark}
+  html.dark input[type=text],html.dark input[type=number],html.dark textarea,html.dark select,
+  html.dark .seg button,html.dark .fmt,html.dark .tabs button,html.dark .lcard,html.dark .mbox,html.dark .ed,
+  html.dark .btn,html.dark .sw .add{background:#232b39;color:var(--ink)}
+  html.dark .seg button.on,html.dark .tabs button.on,html.dark .btn.primary,html.dark .step h4 .n{background:#3b5f8f;color:#fff;border-color:#3b5f8f}
+  html.dark .btn{border-color:#4a6a96;color:#cfe0f5}
+  html.dark .btn.primary:hover{background:#4d74a8}
+  html.dark .addbox,html.dark .upload .thumb,html.dark .bt th,html.dark .sum,html.dark code.path{background:#202735}
+  html.dark .fmt .shape{background:#2d3545;border-color:#7b879c}
+  html.dark .fmt.on,html.dark .fmt:hover{border-color:#6f9ad0}
+  html.dark .err,html.dark .errbox{background:#3b1c1f;color:#f6b8b8;border-color:#6b2a2e}
+  html.dark .info{background:#222a37;color:#aab4c6;border-color:#2d3545}
+  html.dark .warn{background:#3a2d12;color:#f0b865;border-color:#5a4520}
+  html.dark .bt tr.bad td{background:#2e1d20}
+  html.dark .tag.ok{background:#173524;color:#7fd3a0}html.dark .tag.bad{background:#3b1c1f}
+  html.dark .rp-result{background:#173524;border-color:#2a5a3c;color:#a5e0bc}
+  html.dark .ed{border-color:#4a6a96}
+  html.dark .upd{background:#3a2d12;border-color:#6a5420;color:#f0d9a0}
+  html.dark .upd button{background:#232b39;color:#f0d9a0;border-color:#6a5420}
+  html.dark .upd button.primary{background:#3b5f8f;color:#fff}
+  html.dark .mhead,html.dark .mfoot{border-color:var(--line)}
+  html.dark a{color:#8fb4e6}
+  html.dark header a{color:#fff}
+  html.dark .toast{background:#e4e8ef;color:#10141c}
   .foot{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 18px}
   .foot a{color:var(--muted)}
 </style>
 </head>
 <body>
 <header>
-  <h1>Couvertures CMPL <small id="ver-h" style="opacity:.75;font-weight:400;margin-left:6px"></small> <a href="#" id="upd-check" class="hupd" title="Vérifier s'il existe une nouvelle version du programme">⟳ Mises à jour</a> <small id="doc-state"></small></h1>
+  <div class="hleft">
+    <h1>Couvertures CMPL <small id="ver-h" style="opacity:.75;font-weight:400;margin-left:6px"></small> <small id="doc-state"></small></h1>
+    <div class="hlinks">
+      <a href="#" id="upd-check" class="hupd" title="Vérifier s'il existe une nouvelle version du programme">⟳ Mises à jour</a>
+      <a href="#" id="b-report" class="hupd" title="Un souci ? Envoie un rapport par Gmail ou WhatsApp">⚑ Signaler un problème</a>
+    </div>
+  </div>
   <div class="hgroup">
     <button id="b-new" title="Vider les champs du modèle choisi">Nouvelle</button>
     <button id="b-example" title="Recharger l'exemple du modèle choisi">Exemple</button>
@@ -182,6 +230,7 @@
     <button id="b-save" title="Enregistrer cette couverture dans la bibliothèque (Ctrl+S)">Enregistrer<kbd>Ctrl+S</kbd></button>
   </div>
   <button id="gen-top" class="hgen" title="Créer les fichiers de cette couverture (Ctrl+Entrée)">Générer les fichiers</button>
+  <button id="b-theme" class="hquit" title="Passer en thème sombre / clair">☾</button>
   <button id="b-quit" class="hquit" title="Fermer le générateur">Quitter</button>
   <input type="file" id="f-fiche" accept=".json,application/json" class="hide">
 </header>
@@ -258,6 +307,8 @@
     <div data-t="A">
       <label>Auteurs <small>— un par ligne, vide = comme la 1re</small></label>
       <textarea id="auteurs_4e" rows="3"></textarea>
+      <label>Mention <small>(optionnel, en italique sous les auteurs)</small></label>
+      <input type="text" id="mention_4e">
       <div class="row">
         <div><label>ISBN <small>(le code-barres se fait tout seul)</small></label><input type="text" id="isbn" placeholder="978-2-494268-20-3"><div class="isbn-msg" id="isbnmsg"></div></div>
         <div><label>Slogan</label><input type="text" id="slogan"></div>
@@ -409,6 +460,26 @@
   <div class="mbody" id="c-body"></div>
   <div class="mfoot"><button class="btn" id="c-cancel">Retour</button><button class="btn primary" id="c-ok">Continuer</button></div>
 </div></div>
+<div class="modal hide top" id="m-report"><div class="mbox narrow">
+  <div class="mhead"><h3 id="rp-title">Signaler un problème</h3><button class="xbtn" id="rp-x" title="Fermer">✕</button></div>
+  <div class="mbody">
+    <div id="rp-err-wrap" class="hide"><label style="margin-top:0">Message d'erreur</label><pre class="errbox" id="rp-err"></pre></div>
+    <label style="margin-top:0">Que s'est-il passé ? <small>(facultatif, en quelques mots)</small></label>
+    <textarea id="rp-desc" rows="3" placeholder="Ex. : j'ai cliqué sur « Générer » et rien ne s'est passé"></textarea>
+    <div class="rp-send">
+      <button class="btn primary" id="rp-gmail">✉ Envoyer par Gmail</button>
+      <button class="btn primary" id="rp-wa">💬 Envoyer par WhatsApp</button>
+    </div>
+    <div class="hint" style="text-align:center">Un petit fichier de rapport est créé (ta couverture + le détail de l'erreur).</div>
+    <div id="rp-result" class="rp-result hide"></div>
+    <details class="adv" id="rp-dest"><summary>Destinataire (à régler une seule fois)</summary>
+      <label>Adresse e-mail (Gmail)</label><input type="text" id="rp-to" placeholder="prenom@gmail.com">
+      <label>Numéro WhatsApp <small>— avec l'indicatif, ex. 33612345678 ; vide = tu choisis le contact dans WhatsApp</small></label>
+      <input type="text" id="rp-num" placeholder="33612345678">
+    </details>
+    <div class="rp-small"><a href="#" id="rp-save">Enregistrer le rapport sur l'ordinateur</a> · <a href="#" id="rp-copy">Copier le message d'erreur</a> · <a href="#" id="rp-dl">Télécharger le message d'erreur (.txt)</a></div>
+  </div>
+</div></div>
 <div class="modal hide top" id="m-upd"><div class="mbox narrow">
   <div class="mhead"><h3 id="mu-title">Nouvelle version disponible</h3></div>
   <div class="mbody"><div id="mu-body"></div>
@@ -456,7 +527,7 @@ function confirmBox(title, html, okLabel, cancelLabel){
 }
 
 const TEXT_FIELDS = ["auteurs","auteur","titre","sous_titre","tome","mention","details","collection","maison",
-  "titre_4e","auteur_4e","texte_4e","auteurs_4e","isbn","slogan","dos_titre","dos_auteur"];
+  "titre_4e","auteur_4e","texte_4e","auteurs_4e","mention_4e","isbn","slogan","dos_titre","dos_auteur"];
 
 function params(){
   const p = {};
@@ -597,7 +668,7 @@ async function refresh(){
     $("msgs").innerHTML = warningsHtml(r.warnings);
     drawFaces();
   } catch (e) {
-    if (my === seq) $("msgs").innerHTML = `<div class="err">Erreur d'aperçu : ${esc(e.message)}</div>`;
+    if (my === seq) { logClient("Aperçu : " + e.message); $("msgs").innerHTML = `<div class="err">Erreur d'aperçu : ${esc(e.message)} <a href="#" data-report="${esc("Erreur d'aperçu : " + e.message)}">⚑ Signaler</a></div>`; }
   } finally { if (my === seq) $("faces").classList.remove("busy"); }
 }
 
@@ -744,14 +815,110 @@ function updInitialCheck(){
   setTimeout(go, 3000);
 }
 
+// ---------------------------------------------------------------- thème clair / sombre
+function applyTheme(t){
+  document.documentElement.classList.toggle("dark", t === "dark");
+  const b = $("b-theme"); if (b) { b.textContent = t === "dark" ? "☀" : "☾"; b.title = t === "dark" ? "Revenir au thème clair" : "Passer en thème sombre"; }
+}
+function currentTheme(){ return document.documentElement.classList.contains("dark") ? "dark" : "light"; }
+$("b-theme").onclick = () => {
+  const t = currentTheme() === "dark" ? "light" : "dark";
+  applyTheme(t);
+  try { localStorage.setItem("cmpl-theme", t); } catch (e) {}
+  if (boot) { boot.settings.theme = t; api("/api/settings", {theme: t}).catch(() => {}); }
+};
+try { const t0 = localStorage.getItem("cmpl-theme"); if (t0) applyTheme(t0); } catch (e) {}
+
+// ---------------------------------------------------------------- signaler un problème
+const clientLog = [];
+function logClient(msg){ clientLog.push(new Date().toLocaleTimeString() + " " + String(msg).slice(0, 400)); if (clientLog.length > 30) clientLog.shift(); }
+window.addEventListener("error", e => logClient("Erreur page : " + e.message + (e.lineno ? " (ligne " + e.lineno + ")" : "")));
+window.addEventListener("unhandledrejection", e => logClient("Erreur page : " + (e.reason && e.reason.message || e.reason)));
+const RP = {err: "", report: null};
+function openReport(errMsg){
+  RP.err = errMsg || ""; RP.report = null;
+  $("rp-title").textContent = RP.err ? "Un problème est survenu" : "Signaler un problème";
+  $("rp-err-wrap").classList.toggle("hide", !RP.err);
+  $("rp-err").textContent = RP.err;
+  $("rp-result").classList.add("hide");
+  $("rp-to").value = boot.settings.support_email || "";
+  $("rp-num").value = boot.settings.support_whatsapp || "";
+  $("rp-dest").open = !boot.settings.support_email && !boot.settings.support_whatsapp;
+  show("m-report");
+  $("rp-desc").focus();
+}
+function saveDest(){
+  const to = $("rp-to").value.trim(), num = $("rp-num").value.trim();
+  boot.settings.support_email = to; boot.settings.support_whatsapp = num;
+  api("/api/settings", {support_email: to, support_whatsapp: num}).catch(() => {});
+}
+async function makeReport(){
+  if (RP.report) return RP.report;
+  RP.report = await api("/api/report/create", {params: params(), description: $("rp-desc").value, error: RP.err,
+    out_dir: $("out_dir").value, client: clientLog});
+  return RP.report;
+}
+async function sendReport(how){
+  if (how === "gmail" && !$("rp-to").value.trim()) { $("rp-dest").open = true; $("rp-to").focus(); toast("Indique d'abord l'adresse e-mail du destinataire."); return; }
+  saveDest();
+  const box = $("rp-result"); box.classList.remove("hide"); box.innerHTML = "Préparation du rapport…";
+  try {
+    const rep = await makeReport();
+    const r = await api("/api/report/share", {how, path: rep.path, to: $("rp-to").value.trim(), number: $("rp-num").value.trim(),
+      description: $("rp-desc").value, error: RP.err, out_dir: $("out_dir").value});
+    const app = how === "gmail" ? "Gmail" : "WhatsApp";
+    box.innerHTML = `<b>✓ ${app} s'ouvre dans ton navigateur</b>` + (r.copied
+      ? `Le fichier <i>${esc(rep.name)}</i> est déjà copié : dans ${app}, fais simplement <b style="display:inline">Ctrl+V</b> pour le joindre. S'il ne se colle pas, glisse-le depuis la fenêtre de dossier qui vient de s'ouvrir.`
+      : `Joins le fichier <i>${esc(rep.name)}</i> (dossier « Rapports » : ${esc(rep.folder)}) en le glissant dans ${app}.`);
+    if (!r.opened) box.innerHTML += `<br>Si rien ne s'ouvre : <a href="${esc(r.url)}" target="_blank" rel="noopener">clique ici</a>.`;
+  } catch (e) { box.innerHTML = `<div class="err" style="margin:0">${esc(e.message)}</div>`; }
+}
+async function errorTextFull(){ return (await api("/api/report/text", {error: RP.err, client: clientLog})).text; }
+$("rp-gmail").onclick = () => sendReport("gmail");
+$("rp-wa").onclick = () => sendReport("whatsapp");
+$("rp-x").onclick = () => hide("m-report");
+$("rp-to").addEventListener("change", saveDest); $("rp-num").addEventListener("change", saveDest);
+$("rp-save").onclick = async e => {
+  e.preventDefault();
+  try { const rep = await makeReport(); await api("/api/open_folder", {path: rep.folder}); toast("Rapport enregistré : " + rep.name); }
+  catch (er) { toast(er.message); }
+};
+$("rp-copy").onclick = async e => {
+  e.preventDefault();
+  try {
+    const t = await errorTextFull();
+    try { await navigator.clipboard.writeText(t); }
+    catch (er) { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+    toast("✓ Message d'erreur copié");
+  } catch (er) { toast(er.message); }
+};
+$("rp-dl").onclick = async e => {
+  e.preventDefault();
+  try {
+    const t = await errorTextFull();
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([t], {type: "text/plain;charset=utf-8"}));
+    a.download = "erreur-cmpl.txt"; document.body.appendChild(a); a.click(); a.remove();
+    toast("✓ Fichier erreur-cmpl.txt téléchargé");
+  } catch (er) { toast(er.message); }
+};
+$("b-report").onclick = e => { e.preventDefault(); openReport(""); };
+$("msgs").addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-report]"); if (b) { e.preventDefault(); openReport(b.dataset.report); } });
+
 // ---- édition directe par double-clic sur l'aperçu
 function closeEditor(){
   const ed = $("ed"); if (ed.classList.contains("hide")) return;
   ed.classList.add("hide"); ui.edKey = null;
   document.querySelectorAll(".hs.act").forEach(h => h.classList.remove("act"));
 }
+let edMoved = null;      // position choisie à la main (gardée d'une ouverture à l'autre)
 function placeEditor(anchor){
   const ed = $("ed"); ed.classList.remove("hide");
+  if (edMoved) {
+    const w0 = ed.offsetWidth, h0 = ed.offsetHeight;
+    ed.style.left = clamp(edMoved.left, 8, Math.max(8, window.innerWidth - w0 - 8)) + "px";
+    ed.style.top = clamp(edMoved.top, 8, Math.max(8, window.innerHeight - h0 - 8)) + "px";
+    return;
+  }
   const w = ed.offsetWidth, h = ed.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
   let left = clamp(anchor.left, 8, Math.max(8, vw - w - 8));
   let top = anchor.bottom + 8;
@@ -804,6 +971,25 @@ function openColorPop(x, y){
   placeEditor({left: x - 20, top: y, bottom: y + 4});
 }
 $("ed-x").onclick = closeEditor;
+(() => {
+  const head = document.querySelector("#ed .edh"); let d = null;
+  head.addEventListener("pointerdown", e => {
+    if (e.target.closest(".xbtn")) return;
+    const ed = $("ed"), r = ed.getBoundingClientRect();
+    d = {dx: e.clientX - r.left, dy: e.clientY - r.top, id: e.pointerId};
+    head.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  head.addEventListener("pointermove", e => {
+    if (!d) return;
+    const ed = $("ed");
+    const left = clamp(e.clientX - d.dx, 4, Math.max(4, window.innerWidth - ed.offsetWidth - 4));
+    const top = clamp(e.clientY - d.dy, 4, Math.max(4, window.innerHeight - 40));
+    ed.style.left = left + "px"; ed.style.top = top + "px"; edMoved = {left, top};
+  });
+  const end = () => { d = null; };
+  head.addEventListener("pointerup", end); head.addEventListener("pointercancel", end);
+  head.addEventListener("dblclick", e => { if (!e.target.closest(".xbtn")) edMoved = null; });
+})();
 document.addEventListener("pointerdown", e => {
   const ed = $("ed"); if (ed.classList.contains("hide")) return;
   if (!ed.contains(e.target) && !(e.target.closest && e.target.closest(".hs"))) closeEditor();
@@ -1107,7 +1293,9 @@ async function doGenerate(){
   } catch (e) {
     $("d-title").textContent = "Impossible de générer";
     $("d-body").innerHTML = `<div class="err">${esc(e.message)}</div>`;
-    $("d-foot").classList.add("hide"); show("m-done");
+    $("d-foot").classList.add("hide"); hide("m-done");
+    logClient("Génération : " + e.message);
+    openReport("Impossible de générer : " + e.message);
   } finally {
     generating = false; btns.forEach(b => { b.disabled = false; b.textContent = "Générer les fichiers"; });
   }
@@ -1322,6 +1510,7 @@ document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (!$("ed").classList.contains("hide")) { closeEditor(); return; }
   if (!$("m-confirm").classList.contains("hide")) { $("c-cancel").click(); return; }
+  if (!$("m-report").classList.contains("hide")) { hide("m-report"); return; }
   for (const id of ["m-upd", "m-done", "m-view", "m-lib", "m-batch"]) if (!$(id).classList.contains("hide")) { $({"m-upd": "mu-later", "m-done": "d-x", "m-view": "mv-x", "m-lib": "ml-x", "m-batch": "mb-x"}[id]).click(); return; }
 });
 
@@ -1331,6 +1520,7 @@ document.addEventListener("keydown", e => {
   const dl = $("dl-coll"); boot.collections.concat(boot.settings.custom_collections || []).forEach(c => { const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
   $("out_dir").value = boot.settings.out_dir;
   $("ver-h").textContent = "v" + boot.version; updInitialCheck();
+  try { if (!localStorage.getItem("cmpl-theme") && boot.settings.theme) applyTheme(boot.settings.theme); } catch (e) { applyTheme(boot.settings.theme); }
   await loadParams(boot.examples.A);
   try {
     const d = await api("/api/draft/load");

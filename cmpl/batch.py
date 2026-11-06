@@ -22,6 +22,7 @@ COLUMNS = [
     ("Maison", "maison", "Malgache seulement (vide = Éditions CMPL)", "", "Éditions CMPL"),
     ("Titre 4e", "titre_4e", "Droit seulement (vide = même titre que la 1re)", "", ""),
     ("Texte 4e", "texte_4e", "Texte de la 4e de couverture (Alt + Entrée pour les paragraphes)", "- Des voies d’exécution\n  Des saisies", "Efa hariva mena masoandro tamin’izay…"),
+    ("Mention 4e", "mention_4e", "Droit seulement, optionnel : ligne en italique sous les auteurs de la 4e", "", ""),
     ("Auteurs 4e", "auteurs_4e", "Vide = comme la 1re. Malgache : lignes affichées en haut de la 4e (ex. Paul Rapatsalahy | Idealy-Soa)", "Thomas Rakotonaivo | Charly Zafimagnely Nakany", "Paul Rapatsalahy | Idealy-Soa"),
     ("ISBN", "isbn", "Droit : le code-barres est généré automatiquement", "978-2-494268-20-3", ""),
     ("Slogan", "slogan", "Droit seulement (vide = TOUT ce qu’il faut SAVOIR)", "", ""),
@@ -57,7 +58,7 @@ MULTILINE_PIPE = {"auteurs", "details", "auteurs_4e"}
 
 # ------------------------------------------------------------------ modèle Excel
 
-SCOPE_A = {"sous_titre", "tome", "details", "mention", "collection", "titre_4e", "isbn", "slogan"}
+SCOPE_A = {"sous_titre", "tome", "details", "mention", "mention_4e", "collection", "titre_4e", "isbn", "slogan"}
 SCOPE_B = {"maison", "illustration", "logo_rond", "ill_tint"}
 HEADER_OF = {k: h for h, k, *_ in COLUMNS}
 
@@ -275,7 +276,7 @@ def row_to_params(d, extra_colors=None, img_loader=None):
     c = _color(d.get("color"), extra_colors)
     if c:
         p["color"] = c
-    for key in ("titre", "sous_titre", "tome", "mention", "collection", "maison", "titre_4e", "texte_4e", "isbn",
+    for key in ("titre", "sous_titre", "tome", "mention", "mention_4e", "collection", "maison", "titre_4e", "texte_4e", "isbn",
                 "slogan", "dos_auteur", "dos_titre"):
         if d.get(key):
             p[key] = d[key]

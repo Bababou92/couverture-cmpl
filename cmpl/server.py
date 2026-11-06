@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from PIL import Image, ImageOps
 
-from . import assets, batch, colors, defaults, flat, layout, library, render_pdf, render_pptx, render_png, updater, version
+from . import assets, batch, colors, defaults, flat, layout, library, render_pdf, render_pptx, render_png, updater, version, errlog, report
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP_ID = "cmpl-couvertures"
@@ -48,6 +48,10 @@ def settings_path():
     return os.path.join(app_dir(), "reglages.json")
 
 
+SETTING_KEYS = ("custom_colors", "custom_collections", "out_dir", "update_popup", "theme", "support_email",
+                "support_whatsapp")
+
+
 def load_settings():
     try:
         with open(settings_path(), encoding="utf8") as fh:
@@ -57,12 +61,15 @@ def load_settings():
     data.setdefault("custom_colors", [])
     data.setdefault("custom_collections", [])
     data.setdefault("update_popup", True)
+    data.setdefault("theme", "light")
+    data.setdefault("support_email", "")
+    data.setdefault("support_whatsapp", "")
     data.setdefault("out_dir", os.path.join(os.path.expanduser("~"), "Documents", "Couvertures CMPL"))
     return data
 
 
 def save_settings(data):
-    keep = {k: data.get(k) for k in ("custom_colors", "custom_collections", "out_dir", "update_popup")}
+    keep = {k: data.get(k) for k in SETTING_KEYS}
     with open(settings_path(), "w", encoding="utf8") as fh:
         json.dump(keep, fh, ensure_ascii=False, indent=1)
 
@@ -281,6 +288,7 @@ def _analyze(job_id, data, filename, base_dir, img_dir):
                          warn=wl, thumb=thumb_of(pages, 30))
             job["_params"][line] = p
         except Exception as e:
+            errlog.record(f"lot Excel, analyse ligne {line}", e)
             entry.update(error=str(e), type="", format="", color="", spine=None, name="", warn=[], thumb=None)
         job["rows"].append(entry)
         job["done"] = n
@@ -343,6 +351,7 @@ def _run_batch(job_id, lines, opts):
             job["run_results"].append({"line": line, "name": r["name"], "ok": True, "files": len(files),
                                        "folder": info["folder"], "path": info["path"]})
         except Exception as e:
+            errlog.record(f"lot Excel, création ligne {line}", e)
             job["run_results"].append({"line": line, "name": r["titre"], "ok": False, "error": str(e)})
         job["run_done"] = n
     job.update(run_current="", run_finished=True, running=False)
@@ -720,13 +729,31 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"params": p if draft_meaningful(p) else None})
             if path == "/api/settings":
                 s = load_settings()
-                s.update({k: body[k] for k in ("custom_colors", "custom_collections", "out_dir", "update_popup") if k in body})
+                s.update({k: body[k] for k in SETTING_KEYS if k in body})
                 save_settings(s)
                 return self._send(200, {"ok": True})
             if path == "/api/browse":
                 return self._send(200, {"path": browse_folder(body.get("initial"))})
             if path == "/api/open_folder":
                 return self._send(200, {"ok": open_folder(body.get("path", ""))})
+            if path == "/api/report/text":
+                return self._send(200, {"text": report.error_text(body.get("error", ""), body.get("client"))})
+            if path == "/api/report/create":
+                out_dir = body.get("out_dir") or load_settings()["out_dir"]
+                try:
+                    fiche = export_fiche(body["params"]) if body.get("params") else None
+                except Exception as e:
+                    errlog.record("export de la fiche pour le rapport", e)
+                    fiche = None
+                return self._send(200, report.build(out_dir, fiche, body.get("description", ""), body.get("error", ""),
+                                                    body.get("client")))
+            if path == "/api/report/share":
+                out_dir = body.get("out_dir") or load_settings()["out_dir"]
+                if not report.valid_report_path(body.get("path"), out_dir):
+                    return self._send(400, {"error": "rapport introuvable"})
+                return self._send(200, report.share(body["path"], body.get("how"), body.get("to", ""),
+                                                    body.get("number", ""), body.get("description", ""),
+                                                    body.get("error", "")))
             if path == "/api/fiche/export":
                 return self._send(200, export_fiche(body["params"]))
             if path == "/api/fiche/import":
@@ -741,6 +768,7 @@ class Handler(BaseHTTPRequestHandler):
                 th.convert("RGBA" if th.mode == "RGBA" else "RGB").save(buf, "PNG")
                 return self._send(200, {"thumb": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()})
         except Exception as e:  # message lisible dans l'interface
+            errlog.record(path, e)
             import traceback
             traceback.print_exc()
             return self._send(500, {"error": f"{type(e).__name__}: {e}"})
@@ -806,6 +834,7 @@ def main(open_browser=True, relance=False):
         server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     port = server.server_address[1]
     threading.Thread(target=_watchdog, args=(server,), daemon=True).start()
+    errlog.install_thread_hook()
     updater.cleanup_old()
     updater.start_check(delay=2.5)
     url = f"http://127.0.0.1:{port}/"

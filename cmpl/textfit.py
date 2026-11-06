@@ -276,9 +276,9 @@ def round_pt(v):
     return max(4.0, round(v * 2) / 2)
 
 
-def fit_scale(make_paras, width_pt, height_pt, kmin=0.35, step=0.02):
-    """Plus grand facteur k<=1 tel que make_paras(k) tienne dans (width, height) sans mot coupé."""
-    k = 1.0
+def fit_scale(make_paras, width_pt, height_pt, kmin=0.35, step=0.02, kmax=1.0):
+    """Plus grand facteur k<=kmax tel que make_paras(k) tienne dans (width, height) sans mot coupé."""
+    k = kmax
     while True:
         paras = make_paras(k)
         if longest_word(paras) <= width_pt + 1e-6 and total_height(paras, width_pt) <= height_pt + 1e-6:

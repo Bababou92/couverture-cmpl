@@ -93,7 +93,7 @@ BLANK_B = dict(EXAMPLE_B, **{k: "" for k in (
     "auteur", "titre", "auteur_4e", "texte_4e", "dos_auteur")}, illustration=None)
 
 KEYS = ["type", "format", "color", "logo", "spine_mm", "auteurs", "auteur", "titre", "sous_titre", "tome",
-        "details", "mention", "collection", "titre_4e", "texte_4e", "auteurs_4e", "auteur_4e", "isbn", "slogan",
+        "details", "mention", "collection", "titre_4e", "texte_4e", "auteurs_4e", "mention_4e", "auteur_4e", "isbn", "slogan",
         "dos_titre", "dos_auteur", "illustration", "maison", "logo_rond",
         "ill_zoom", "ill_x", "ill_y", "ill_tint"]
 

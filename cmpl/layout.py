@@ -136,9 +136,9 @@ def _shrink_note(label, k, fits, warn_below=0.8):
         note("warn", f"{label} : texte réduit à {round(k * 100)} % de sa taille normale pour tenir.")
 
 
-def _fit(label, make, w_pt, h_pt, kmin=0.35, warn_below=0.8):
+def _fit(label, make, w_pt, h_pt, kmin=0.35, warn_below=0.8, kmax=1.0):
     """textfit.fit_scale + remarque si le texte a dû être réduit (ou déborde malgré tout)."""
-    k, paras = textfit.fit_scale(make, w_pt, h_pt, kmin=kmin)
+    k, paras = textfit.fit_scale(make, w_pt, h_pt, kmin=kmin, kmax=kmax)
     fits = textfit.longest_word(paras) <= w_pt + 1e-6 and textfit.total_height(paras, w_pt) <= h_pt + 1e-6
     _shrink_note(label, k, fits, warn_below)
     return k, paras
@@ -257,7 +257,8 @@ def a_front(p, W, H, user_imgs):
                 lines.append(cur)
             return [Para([Run(l, "arial", size, True, False, C, True)], align="r") for l in lines]
 
-        k, paras = _fit("Auteurs (1re de couverture)", make, L_pt, thick_pt)
+        # taille dynamique : un seul nom court => gros (remplit la largeur du bandeau) ; beaucoup de noms => plus petit
+        k, paras = _fit("Auteurs (1re de couverture)", make, L_pt, thick_pt, kmax=2.0)
         els.append(TextBox(m_left, m_top, strip_w, frame_h, paras, anchor="m", rot=270, inset=inset,
                            name="Auteurs"))
 
@@ -421,10 +422,20 @@ def a_back(p, W, H, user_imgs):
     auth = lines_of(p.get("auteurs_4e")) or lines_of(p.get("auteurs"))
     auth_y = frame_y + frame_h + 4 * sy
     auth_h = 20.5 * sy
-    spot("Auteurs (4e)", [F("auteurs_4e", "Auteurs de la 4e (un par ligne)", "\n".join(auth), True)],
+    mention4 = (p.get("mention_4e") or "").strip()
+    spot("Auteurs (4e)", [F("auteurs_4e", "Auteurs de la 4e (un par ligne)", "\n".join(auth), True),
+                          F("mention_4e", "Mention (sous les auteurs)", p.get("mention_4e"))],
          frame_x, auth_y, frame_w, auth_h, family="arial", size=10.5 * s)
+    m4_h = 0.0
+    if mention4:
+        ms4 = textfit.round_pt(9 * s)
+        while textfit.text_width_pt(mention4, "arial", ms4, False, True) > frame_w / MM_PER_PT and ms4 > 5:
+            ms4 -= 0.5
+        m4_h = textfit.line_height_pt(Run("x", "arial", ms4)) * MM_PER_PT
+        els.append(TextBox(frame_x, auth_y + auth_h - m4_h, frame_w, m4_h,
+                           [_single(mention4, "arial", ms4, WHITE, italic=True)], anchor="b", name="Mention (4e)"))
     if auth:
-        aw_pt, ah_pt = frame_w / MM_PER_PT, auth_h / MM_PER_PT
+        aw_pt, ah_pt = frame_w / MM_PER_PT, (auth_h - (m4_h + 1.0 * sy if m4_h else 0.0)) / MM_PER_PT
 
         def make_a(k):
             sz = textfit.round_pt(10.5 * s * k)
