@@ -167,7 +167,7 @@
 </head>
 <body>
 <header>
-  <h1>Couvertures CMPL <small id="doc-state"></small></h1>
+  <h1>Couvertures CMPL <small id="ver-h" style="opacity:.75;font-weight:400;margin-left:6px"></small> <small id="doc-state"></small></h1>
   <div class="hgroup">
     <button id="b-new" title="Vider les champs du modèle choisi">Nouvelle</button>
     <button id="b-example" title="Recharger l'exemple du modèle choisi">Exemple</button>
@@ -1281,7 +1281,7 @@ document.addEventListener("keydown", e => {
   const r = await fetch("/api/bootstrap?t=" + TOKEN); boot = await r.json();
   const dl = $("dl-coll"); boot.collections.concat(boot.settings.custom_collections || []).forEach(c => { const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
   $("out_dir").value = boot.settings.out_dir;
-  $("ver").textContent = "Version " + boot.version; updInitialCheck();
+  $("ver").textContent = "Version " + boot.version; $("ver-h").textContent = "v" + boot.version; updInitialCheck();
   await loadParams(boot.examples.A);
   try {
     const d = await api("/api/draft/load");
