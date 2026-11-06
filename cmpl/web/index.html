@@ -456,6 +456,7 @@
   <div class="mbody">
     <input type="text" id="lib-q" placeholder="Rechercher un titre ou un auteur…">
     <div id="lib-grid" class="lib-grid"></div>
+    <details id="lib-bk" style="margin-top:14px"><summary style="cursor:pointer;color:var(--muted);font-size:13px">Sauvegardes automatiques <span id="lib-bkn"></span></summary><div id="lib-bkl"></div></details>
   </div>
   <div class="mfoot"><span class="hint" style="flex:1;align-self:center">« Ouvrir » reprend la couverture pour la modifier · « Dupliquer » en fait une copie (nouvelle édition, tome suivant…)</span>
     <button class="btn" id="lib-import">Importer un fichier…</button><button class="btn" id="lib-export">Exporter la couverture en cours…</button></div>
@@ -1213,7 +1214,19 @@ async function openLib(){
   show("m-lib"); $("lib-q").value = ""; $("lib-grid").innerHTML = "<div class='hint'>Chargement…</div>";
   try { libItems = (await api("/api/lib/list")).items; } catch (e) { $("lib-grid").innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
   renderLib();
+  try { renderBackups((await api("/api/backup/list")).items); } catch (e) {}
 }
+function renderBackups(items){
+  $("lib-bkn").textContent = items.length ? `(${items.length})` : "";
+  $("lib-bkl").innerHTML = items.length ? `<div class="hint">Copies datées de ton travail en cours (les 10 dernières, une toutes les 10 minutes au plus). « Restaurer » les rouvre pour les modifier.</div>` + items.map(b =>
+    `<div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)"><div style="flex:1"><b>${esc(b.titre || "(sans titre)")}</b> <span class="hint">${esc(b.auteur)} · ${new Date(b.t * 1000).toLocaleString("fr-FR", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</span></div><button class="btn" data-bk="${esc(b.name)}">Restaurer</button></div>`).join("")
+    : `<div class="hint">Pas encore de sauvegarde automatique.</div>`;
+}
+$("lib-bkl").addEventListener("click", async e => {
+  const b = e.target.closest("[data-bk]"); if (!b) return;
+  try { const r = await api("/api/backup/load", {name: b.dataset.bk}); await loadParams(r.params, {keepLib: false}); ui.dirty = true; docState(); hide("m-lib"); toast("Sauvegarde restaurée : enregistre-la dans la bibliothèque si elle te convient."); }
+  catch (er) { toast("Restauration impossible : " + er.message); }
+});
 function renderLib(){
   const q = $("lib-q").value.trim().toLowerCase();
   const items = libItems.filter(m => !q || (m.titre + " " + m.auteur).toLowerCase().includes(q));

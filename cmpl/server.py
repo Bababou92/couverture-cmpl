@@ -718,6 +718,10 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/lib/delete":
                 library.delete(app_dir(), body.get("id"))
                 return self._send(200, {"ok": True})
+            if path == "/api/backup/list":
+                return self._send(200, {"items": library.backup_list(app_dir())})
+            if path == "/api/backup/load":
+                return self._send(200, {"params": import_fiche(library.backup_load(app_dir(), body.get("name")))})
             if path == "/api/draft/save":
                 library.draft_save(app_dir(), export_fiche(body["params"]))
                 return self._send(200, {"ok": True})

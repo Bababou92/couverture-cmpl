@@ -91,11 +91,19 @@ def draft_save(base, doc):
         backup = os.path.join(base, "brouillon-precedent.json")
         if draft_save.first:
             try:
+                snapshot(base, _read_json(path), force=True)
+            except Exception:
+                pass
+            try:
                 os.replace(path, backup)
             except OSError:
                 pass
     draft_save.first = False
     _write_json(path, doc)
+    try:
+        snapshot(base, doc)
+    except Exception:
+        pass
 
 
 draft_save.first = True
@@ -106,3 +114,62 @@ def draft_load(base):
         return _read_json(draft_path(base))
     except Exception:
         return None
+
+
+# ---------------------------------------------------------------- sauvegardes automatiques datées
+KEEP_BACKUPS = 10
+BACKUP_GAP = 600          # secondes entre deux copies automatiques
+
+
+def backups_dir(base):
+    d = os.path.join(base, "sauvegardes")
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def snapshot(base, doc, force=False):
+    """Copie datée du brouillon : au plus une toutes les 10 minutes (sauf force), jamais deux fois la même, les 10 dernières."""
+    p = doc.get("params", {})
+    if not any(str(p.get(k) or "").strip() for k in ("titre", "auteurs", "auteur")):
+        return None
+    d = backups_dir(base)
+    files = sorted(f for f in os.listdir(d) if f.endswith(".json"))
+    if files:
+        last = os.path.join(d, files[-1])
+        if not force and time.time() - os.path.getmtime(last) < BACKUP_GAP:
+            return None
+        try:
+            if _read_json(last).get("doc", {}).get("params") == p:
+                return None
+        except Exception:
+            pass
+    name = time.strftime("%Y-%m-%d_%Hh%Mm%S") + ".json"
+    _write_json(os.path.join(d, name), {"t": time.time(), "titre": str(p.get("titre") or "").strip()[:80],
+                                        "auteur": str(p.get("auteur") or p.get("auteurs") or "").strip()[:60], "doc": doc})
+    for old in sorted(f for f in os.listdir(d) if f.endswith(".json"))[:-KEEP_BACKUPS]:
+        try:
+            os.remove(os.path.join(d, old))
+        except OSError:
+            pass
+    return name
+
+
+def backup_list(base):
+    out = []
+    d = backups_dir(base)
+    for f in sorted((f for f in os.listdir(d) if f.endswith(".json")), reverse=True):
+        try:
+            j = _read_json(os.path.join(d, f))
+            out.append({"name": f, "t": j.get("t", 0), "titre": j.get("titre", ""), "auteur": j.get("auteur", "")})
+        except Exception:
+            continue
+    return out
+
+
+def backup_load(base, name):
+    if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}h[0-9]{2}m[0-9]{2}\.json", name or ""):
+        raise ValueError("sauvegarde introuvable")
+    p = os.path.join(backups_dir(base), name)
+    if not os.path.isfile(p):
+        raise ValueError("sauvegarde introuvable")
+    return _read_json(p)["doc"]
