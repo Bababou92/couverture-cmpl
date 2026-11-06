@@ -1,2 +1,2 @@
-Mises à jour : « ⟳ Mises à jour » en haut de page, avec une fenêtre qui donne le résultat tout de suite.
-Fenêtre de proposition au lancement (réactivable depuis cette fenêtre).
+Mises a jour : "Mises a jour" en haut de page, avec une fenetre qui donne le resultat tout de suite.
+Fenetre de proposition au lancement (reactivable depuis cette fenetre).

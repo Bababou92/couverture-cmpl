@@ -14,6 +14,10 @@ on:
 permissions:
   contents: write
 
+env:
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: utf-8
+
 jobs:
   windows:
     runs-on: windows-latest
@@ -98,7 +102,7 @@ jobs:
               "notes": notes,
           }
           json.dump(data, open("dist/latest.json", "w", encoding="utf8"), ensure_ascii=False, indent=2)
-          print(json.dumps(data, ensure_ascii=False, indent=2))
+          print(json.dumps(data, indent=2))
 
       - name: Publier dans Releases
         if: env.SKIP != 'true'
@@ -107,16 +111,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = $env:TAG
-          $notes = "Nouveautés"
-          if (Test-Path NOTES.txt) { $notes = Get-Content NOTES.txt -Raw -Encoding utf8 }
+          if (-not (Test-Path NOTES.txt)) { "Nouveautés" | Out-File NOTES.txt -Encoding utf8 }
           $titre = "Couvertures CMPL $($tag.TrimStart('v'))"
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
             # release déjà créée depuis le site GitHub : on y ajoute les fichiers
             gh release upload $tag "dist/Couvertures-CMPL.exe" "dist/latest.json" --clobber
             if ($LASTEXITCODE -ne 0) { throw "Envoi des fichiers impossible" }
-            gh release edit $tag --title "$titre" --notes "$notes"
+            gh release edit $tag --title "$titre" --notes-file NOTES.txt
           } else {
-            gh release create $tag "dist/Couvertures-CMPL.exe" "dist/latest.json" --title "$titre" --notes "$notes" --target $env:GITHUB_SHA
+            gh release create $tag "dist/Couvertures-CMPL.exe" "dist/latest.json" --title "$titre" --notes-file NOTES.txt --target $env:GITHUB_SHA
             if ($LASTEXITCODE -ne 0) { throw "Création de la release impossible" }
           }
