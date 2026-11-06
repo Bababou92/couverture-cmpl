@@ -14,7 +14,7 @@
   html,body{margin:0;height:100%}
   body{font:14px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
   header{display:flex;align-items:center;gap:14px;padding:8px 18px;background:var(--accent);color:#fff;position:sticky;top:0;z-index:5;flex-wrap:wrap}
-  header h1{font-size:16px;margin:0;font-weight:600;letter-spacing:.2px;flex:1;min-width:200px;white-space:nowrap}
+  header h1{font-size:16px;margin:0;font-weight:600;letter-spacing:.2px;flex:1;min-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hgroup{display:flex;gap:6px;align-items:center}
   .hgroup+.hgroup{padding-left:14px;border-left:1px solid rgba(255,255,255,.25)}
   header button.hgen{background:#fff;color:var(--accent);border:0;font-weight:700;font-size:15px;padding:9px 20px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
@@ -161,13 +161,15 @@
   .upd .bar i{display:block;height:100%;width:0;background:var(--accent-2);transition:width .3s}
   .upd button{font:inherit;font-size:13.5px;padding:5px 12px;border-radius:6px;border:1px solid #c9ae5a;background:#fff;color:#4a3800;cursor:pointer}
   .upd button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .hupd{color:#fff;font-size:12.5px;font-weight:400;opacity:.85;margin-left:8px;text-decoration:underline}
+  .hupd:hover{opacity:1}
   .foot{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 18px}
   .foot a{color:var(--muted)}
 </style>
 </head>
 <body>
 <header>
-  <h1>Couvertures CMPL <small id="ver-h" style="opacity:.75;font-weight:400;margin-left:6px"></small> <small id="doc-state"></small></h1>
+  <h1>Couvertures CMPL <small id="ver-h" style="opacity:.75;font-weight:400;margin-left:6px"></small> <a href="#" id="upd-check" class="hupd" title="Vérifier s'il existe une nouvelle version du programme">⟳ Mises à jour</a> <small id="doc-state"></small></h1>
   <div class="hgroup">
     <button id="b-new" title="Vider les champs du modèle choisi">Nouvelle</button>
     <button id="b-example" title="Recharger l'exemple du modèle choisi">Exemple</button>
@@ -348,7 +350,6 @@
   </div>
 </div>
 </main>
-<div class="foot"><span id="ver"></span> · <a href="#" id="upd-check">Rechercher une mise à jour</a></div>
 
 
 <!-- ================= modales ================= -->
@@ -411,8 +412,8 @@
 <div class="modal hide top" id="m-upd"><div class="mbox narrow">
   <div class="mhead"><h3 id="mu-title">Nouvelle version disponible</h3></div>
   <div class="mbody"><div id="mu-body"></div>
-    <label class="chk" style="margin-top:14px"><input type="checkbox" id="mu-never"> Ne plus afficher cette fenêtre</label>
-    <div class="hint" style="margin-left:24px">Le bandeau jaune en haut de la page continuera de signaler les mises à jour.</div></div>
+    <label class="chk" style="margin-top:14px"><input type="checkbox" id="mu-opt"> <span id="mu-optlab"></span></label>
+    <div class="hint" id="mu-hint" style="margin-left:24px">Le bandeau jaune en haut de la page continuera de signaler les mises à jour.</div></div>
   <div class="mfoot"><button class="btn" id="mu-later">Plus tard</button><button class="btn primary" id="mu-go">Mettre à jour</button></div>
 </div></div>
 <div class="modal hide" id="m-done"><div class="mbox narrow">
@@ -687,32 +688,48 @@ async function updApply(){
   setTimeout(tick, 2000);
 }
 $("upd-check").onclick = async e => {
-  e.preventDefault(); updDismissed = false; toast("Recherche de mises à jour…");
-  await api("/api/update/check", {});
-  for (let i = 0; i < 20; i++) {
+  e.preventDefault(); updDismissed = false; closeEditor();
+  updOpen("manual"); updFill({state: "checking"});
+  try { await api("/api/update/check", {}); } catch (err) { return updFill({state: "error", error: err.message}); }
+  for (let i = 0; i < 30; i++) {
     await new Promise(r => setTimeout(r, 400));
     const u = await api("/api/update/status", {});
-    if (u.state !== "checking") {
-      if (u.state === "none") toast("✓ Tu as déjà la dernière version (" + u.version + ").");
-      else if (u.state === "error") toast(u.error || "Impossible de vérifier les mises à jour.");
-      else updRender(u);
-      return;
-    }
+    if (u.state !== "checking") { if (u.state === "available") updRender(u); updFill(u); return; }
   }
+  updFill({state: "error", error: "La vérification prend trop de temps (connexion lente ?). Réessaie plus tard."});
 };
-let updPopupShown = false;
+let updPopupShown = false, updMode = "launch";
+function updOpen(mode){
+  updMode = mode;
+  if (mode === "launch") { $("mu-optlab").textContent = "Ne plus afficher cette fenêtre"; $("mu-opt").checked = false; }
+  else { $("mu-optlab").textContent = "M'avertir par une fenêtre à chaque lancement"; $("mu-opt").checked = boot.settings.update_popup !== false; }
+  $("mu-hint").classList.toggle("hide", mode !== "launch");
+  show("m-upd");
+}
+function updFill(u){
+  const later = $("mu-later"), go = $("mu-go"), n = ((u && u.notes) || "").trim();
+  let title = "Mises à jour", html = "", canGo = false;
+  if (u.state === "checking" || u.state === "idle") html = "Recherche en cours…";
+  else if (u.state === "available") {
+    canGo = true; title = "Nouvelle version " + u.latest.version + " disponible";
+    html = `<div>Tu as la version ${esc(u.version)}. Installer la ${esc(u.latest.version)} maintenant ?</div>`
+      + (n ? `<div class="hint" style="margin-top:8px;white-space:pre-line">${esc(n)}</div>` : "")
+      + `<div class="hint" style="margin-top:8px">Ton travail en cours est sauvegardé automatiquement ; le programme se relance tout seul.</div>`;
+  }
+  else if (u.state === "none") html = `<div style="font-size:15px">✓ Tu as déjà la dernière version (v${esc(u.version)}).</div>`;
+  else if (u.state === "error") html = `<div>⚠ ${esc(u.error || "Impossible de vérifier les mises à jour (pas de connexion internet ?).")}</div>`;
+  else html = esc(u.state);
+  $("mu-title").textContent = title; $("mu-body").innerHTML = html;
+  go.classList.toggle("hide", !canGo);
+  later.textContent = canGo ? "Plus tard" : (u.state === "checking" ? "Fermer" : "OK");
+}
 function updPopup(u){
   if (updPopupShown || boot.settings.update_popup === false || document.querySelector(".modal:not(.hide)")) return;
-  updPopupShown = true;
-  const n = (u.notes || "").trim();
-  $("mu-title").textContent = "Nouvelle version " + u.latest.version + " disponible";
-  $("mu-body").innerHTML = `<div>Tu as la version ${esc(u.version)}. Installer la ${esc(u.latest.version)} maintenant ?</div>`
-    + (n ? `<div class="hint" style="margin-top:8px;white-space:pre-line">${esc(n)}</div>` : "")
-    + `<div class="hint" style="margin-top:8px">Ton travail en cours est sauvegardé automatiquement ; le programme se relance tout seul.</div>`;
-  $("mu-never").checked = false; show("m-upd");
+  updPopupShown = true; updOpen("launch"); updFill(u);
 }
 function updPopupClose(go){
-  if ($("mu-never").checked) { boot.settings.update_popup = false; api("/api/settings", {update_popup: false}).catch(() => {}); }
+  const want = updMode === "launch" ? (boot.settings.update_popup !== false && !$("mu-opt").checked) : $("mu-opt").checked;
+  if (want !== (boot.settings.update_popup !== false)) { boot.settings.update_popup = want; api("/api/settings", {update_popup: want}).catch(() => {}); }
   hide("m-upd"); if (go) updStart();
 }
 $("mu-later").onclick = () => updPopupClose(false);
@@ -1313,7 +1330,7 @@ document.addEventListener("keydown", e => {
   const r = await fetch("/api/bootstrap?t=" + TOKEN); boot = await r.json();
   const dl = $("dl-coll"); boot.collections.concat(boot.settings.custom_collections || []).forEach(c => { const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
   $("out_dir").value = boot.settings.out_dir;
-  $("ver").textContent = "Version " + boot.version; $("ver-h").textContent = "v" + boot.version; updInitialCheck();
+  $("ver-h").textContent = "v" + boot.version; updInitialCheck();
   await loadParams(boot.examples.A);
   try {
     const d = await api("/api/draft/load");

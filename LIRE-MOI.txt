@@ -82,11 +82,13 @@ Bouton "Lot Excel" en haut. Trois etapes, dans l'ordre :
 Mises a jour automatiques
 -------------------------
 Au lancement, le programme verifie en arriere-plan (si internet marche) s'il existe une nouvelle version.
-Si oui, un bandeau jaune apparait : "Nouvelle version X disponible" avec "Mettre a jour" / "Plus tard".
+Si oui, une fenetre propose "Mettre a jour" / "Plus tard" (case "Ne plus afficher cette fenetre" : le bandeau
+jaune en haut de la page continue alors de signaler la nouvelle version).
 Un clic sur "Mettre a jour" telecharge la version, la verifie, remplace le programme et le relance tout seul
 (la page se recharge ; les couvertures et la bibliotheque ne sont pas touchees). Rien ne se fait sans clic.
-En bas de page : "Rechercher une mise a jour" pour verifier a la demande. Le programme doit etre dans un
-dossier ou l'utilisateur peut ecrire (Bureau, Documents), pas dans "Program Files".
+En haut de page, "Mises a jour" (a cote du numero de version) verifie a la demande et affiche le resultat dans
+une fenetre ; la case "M'avertir par une fenetre a chaque lancement" permet de reactiver la fenetre du lancement.
+Le programme doit etre dans un dossier ou l'utilisateur peut ecrire (Bureau, Documents), pas dans "Program Files".
 Si internet est lent, "Annuler" arrete le telechargement ; on peut reessayer plus tard.
 
 Pour toi (publier une nouvelle version)

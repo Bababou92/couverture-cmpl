@@ -1,2 +1,2 @@
-Fenêtre de proposition de mise à jour au lancement (avec case « Ne plus afficher »).
-Dos en petites capitales, notion de fonds perdus retirée.
+Mises à jour : « ⟳ Mises à jour » en haut de page, avec une fenêtre qui donne le résultat tout de suite.
+Fenêtre de proposition au lancement (réactivable depuis cette fenêtre).
