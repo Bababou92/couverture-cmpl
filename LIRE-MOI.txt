@@ -139,3 +139,5 @@ S'il ne les trouve pas, il prend des polices libres equivalentes (Liberation, Te
 
 Ou sont les reglages ? %APPDATA%\CMPL-Couvertures\ : reglages.json (couleurs perso, dernier dossier),
 bibliotheque\ (couvertures enregistrees), brouillon.json (reprise automatique).
+
+Sans internet : un bandeau rouge apparait en haut de la page. Creer des couvertures, l'apercu et la generation fonctionnent toujours ; seules les mises a jour et l'envoi d'un rapport (Gmail / WhatsApp) ont besoin d'internet.

@@ -206,6 +206,9 @@
   html.dark .tag.ok{background:#173524;color:#7fd3a0}html.dark .tag.bad{background:#3b1c1f}
   html.dark .rp-result{background:#173524;border-color:#2a5a3c;color:#a5e0bc}
   html.dark .ed{border-color:#4a6a96}
+  .netbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 18px;background:#fde8e8;border-bottom:1px solid #f0b4b4;color:#7f1d1d;font-size:14px}
+  .netbar .grow{flex:1;min-width:220px}
+  html.dark .netbar{background:#3d1d1d;border-color:#6d2f2f;color:#ffb4ad}
   html.dark .upd{background:#3a2d12;border-color:#6a5420;color:#f0d9a0}
   html.dark .upd button{background:#232b39;color:#f0d9a0;border-color:#6a5420}
   html.dark .upd button.primary{background:#3b5f8f;color:#fff}
@@ -248,6 +251,7 @@
 <div class="banner hide" id="draft-banner"><span>📝 Une couverture en cours a été retrouvée (<b id="draft-title"></b>). Veux-tu la reprendre ?</span>
   <button class="btn primary" id="draft-yes">Reprendre</button><button class="btn" id="draft-no">Non, merci</button></div>
 
+<div id="netbar" class="netbar hide"><span class="grow"><b>Pas de connexion internet.</b> Les mises à jour et l'envoi d'un rapport (Gmail / WhatsApp) sont impossibles. Le reste (créer, aperçu, générer les fichiers) fonctionne.</span><button class="btn small" id="net-retry">Réessayer</button></div>
 <div class="upd hide" id="upd"></div>
 <main>
 <div class="col-form">
@@ -773,6 +777,7 @@ async function updApply(){
 $("upd-check").onclick = async e => {
   e.preventDefault(); updDismissed = false; closeEditor();
   updOpen("manual"); updFill({state: "checking"});
+  await netCheck(true); if (!NET.ok) return updFill({state: "error", error: "Pas de connexion internet : vérifie le wifi puis réessaie."});
   try { await api("/api/update/check", {}); } catch (err) { return updFill({state: "error", error: err.message}); }
   for (let i = 0; i < 30; i++) {
     await new Promise(r => setTimeout(r, 400));
@@ -827,6 +832,32 @@ function updInitialCheck(){
   setTimeout(go, 3000);
 }
 
+// ---------------------------------------------------------------- connexion internet
+const NET = {ok: true, busy: null};
+async function netCheck(force){
+  if (NET.busy) return NET.busy;
+  NET.busy = (async () => {
+    let ok = true;
+    try { ok = !!(await api("/api/net", {force: !!force})).online; } catch (e) { ok = NET.ok; }
+    NET.ok = ok; $("netbar").classList.toggle("hide", ok);
+    NET.busy = null; return ok;
+  })();
+  return NET.busy;
+}
+async function needNet(what){
+  await netCheck(true);
+  while (!NET.ok) {
+    const retry = await confirmBox("Pas de connexion internet", `<div><b>${esc(what)}</b> a besoin d'internet. Vérifie que l'ordinateur est connecté au wifi, puis réessaie.</div>`, "Réessayer", "Annuler");
+    if (!retry) return false;
+    await netCheck(true);
+  }
+  return true;
+}
+window.addEventListener("offline", () => { NET.ok = false; $("netbar").classList.remove("hide"); });
+window.addEventListener("online", () => netCheck(true));
+setInterval(() => netCheck(false), 12000);
+$("net-retry").onclick = async () => { $("net-retry").disabled = true; await netCheck(true); $("net-retry").disabled = false; if (NET.ok) toast("✓ Connexion rétablie"); };
+
 // ---------------------------------------------------------------- thème clair / sombre
 function applyTheme(t){
   document.documentElement.classList.toggle("dark", t === "dark");
@@ -873,6 +904,7 @@ async function makeReport(){
 async function sendReport(how){
   if (how === "gmail" && !$("rp-to").value.trim()) { $("rp-dest").open = true; $("rp-to").focus(); toast("Indique d'abord l'adresse e-mail du destinataire."); return; }
   saveDest();
+  if (!(await needNet(how === "gmail" ? "L'envoi par Gmail" : "L'envoi par WhatsApp"))) return;
   const box = $("rp-result"); box.classList.remove("hide"); box.innerHTML = "Préparation du rapport…";
   try {
     const rep = await makeReport();
@@ -1541,7 +1573,7 @@ document.addEventListener("keydown", e => {
   const r = await fetch("/api/bootstrap?t=" + TOKEN); boot = await r.json();
   const dl = $("dl-coll"); boot.collections.concat(boot.settings.custom_collections || []).forEach(c => { const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
   $("out_dir").value = boot.settings.out_dir;
-  $("ver-h").textContent = "v" + boot.version; updInitialCheck();
+  $("ver-h").textContent = "v" + boot.version; updInitialCheck(); netCheck(true);
   try { if (!localStorage.getItem("cmpl-theme") && boot.settings.theme) applyTheme(boot.settings.theme); } catch (e) { applyTheme(boot.settings.theme); }
   await loadParams(boot.examples.A);
   try {

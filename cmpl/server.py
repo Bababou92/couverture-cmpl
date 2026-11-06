@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from PIL import Image, ImageOps
 
-from . import assets, batch, colors, defaults, flat, layout, library, render_pdf, render_pptx, render_png, updater, version, errlog, report
+from . import assets, batch, colors, defaults, flat, layout, library, net, render_pdf, render_pptx, render_png, updater, version, errlog, report
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP_ID = "cmpl-couvertures"
@@ -740,6 +740,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"path": browse_folder(body.get("initial"))})
             if path == "/api/open_folder":
                 return self._send(200, {"ok": open_folder(body.get("path", ""))})
+            if path == "/api/net":
+                return self._send(200, {"online": net.online(bool(body.get("force")))})
             if path == "/api/report/text":
                 return self._send(200, {"text": report.error_text(body.get("error", ""), body.get("client"))})
             if path == "/api/report/create":
