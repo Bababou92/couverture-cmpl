@@ -218,34 +218,46 @@
   html.dark .toast{background:#e4e8ef;color:#10141c}
   .foot{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 18px}
   .foot a{color:var(--muted)}
+  /* v1.0.9 : même présentation que le catalogue (menu, en-tête) */
+  header{gap:6px}
+  header h1{flex:1 1 auto;min-width:0}
+  header button.hicon{padding:6px 9px;min-width:34px}
+  .menuwrap{position:relative}
+  .menu{position:absolute;right:0;top:calc(100% + 8px);width:300px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 34px rgba(10,20,40,.35);padding:6px;z-index:40}
+  header .menu button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;text-align:left;background:none;border:0;color:var(--ink);padding:8px 10px;border-radius:8px}
+  header .menu button:hover,header .menu button:focus-visible{background:rgba(59,95,143,.12);outline:none}
+  header .menu button.danger .mi-t{color:#b3261e}
+  html.dark header .menu button.danger .mi-t{color:#ff7b72}
+  .menu .mi-t{font-weight:600;font-size:14px}.menu .mi-d{font-size:12px;color:var(--muted)}
+  .menu hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
+  .kbd{font:12px Consolas,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;background:var(--card);color:var(--ink)}
+  .kbdhelp{margin-top:8px;font-size:12.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
 </style>
 </head>
 <body>
 <header>
-  <div class="hleft">
-    <h1>Couvertures CMPL <small id="ver-h" style="opacity:.75;font-weight:400;margin-left:6px"></small> <small id="doc-state"></small></h1>
-    <div class="hlinks">
-      <a href="#" id="upd-check" class="hupd" title="Vérifier s'il existe une nouvelle version du programme">⟳ Mises à jour</a>
-      <a href="#" id="b-report" class="hupd" title="Un souci ? Envoie un rapport par Gmail ou WhatsApp">⚑ Signaler un problème</a>
+  <h1>Couvertures CMPL <small id="ver-h"></small> <small id="doc-state"></small></h1>
+  <button id="b-undo" class="hicon" title="Annuler la dernière modification (Ctrl+Z)" aria-label="Annuler" disabled>↶</button><button id="b-redo" class="hicon" title="Rétablir (Ctrl+Y)" aria-label="Rétablir" disabled>↷</button>
+  <button id="b-save" title="Enregistrer cette couverture dans la bibliothèque (Ctrl+S)">Enregistrer<kbd>Ctrl+S</kbd></button>
+  <div class="menuwrap">
+    <button id="b-menu" aria-haspopup="true" aria-expanded="false" title="Bibliothèque, lot Excel, mises à jour…">☰ Menu</button>
+    <div id="menu" class="menu hide" role="menu">
+      <button id="b-lib" role="menuitem"><span class="mi-t">Bibliothèque</span><span class="mi-d">Toutes les couvertures enregistrées</span></button>
+      <button id="b-batch" role="menuitem"><span class="mi-t">Lot Excel</span><span class="mi-d">Créer plusieurs couvertures depuis un tableau</span></button>
+      <hr>
+      <button id="b-example" role="menuitem"><span class="mi-t">Exemple</span><span class="mi-d">Recharger l'exemple du modèle choisi</span></button>
+      <button id="b-new" class="danger" role="menuitem"><span class="mi-t">Nouvelle couverture</span><span class="mi-d">Vider les champs du modèle choisi</span></button>
+      <hr>
+      <button id="upd-check" role="menuitem"><span class="mi-t">Mises à jour</span><span class="mi-d">Vérifier s'il existe une nouvelle version</span></button>
+      <button id="b-report" role="menuitem"><span class="mi-t">Signaler un problème</span><span class="mi-d">Rapport à envoyer par Gmail ou WhatsApp</span></button>
     </div>
   </div>
-  <div class="hgroup">
-    <button id="b-new" title="Vider les champs du modèle choisi">Nouvelle</button>
-    <button id="b-example" title="Recharger l'exemple du modèle choisi">Exemple</button>
-    <button id="b-lib" title="Toutes les couvertures enregistrées">Bibliothèque</button>
-    <button id="b-batch" title="Créer plusieurs couvertures d'un coup depuis un tableau Excel">Lot Excel</button>
-  </div>
-  <div class="hgroup">
-    <button id="b-undo" title="Annuler la dernière modification (Ctrl+Z)" disabled>↶</button>
-    <button id="b-redo" title="Rétablir (Ctrl+Y)" disabled>↷</button>
-    <button id="b-save" title="Enregistrer cette couverture dans la bibliothèque (Ctrl+S)">Enregistrer<kbd>Ctrl+S</kbd></button>
-  </div>
-  <button id="gen-top" class="hgen" title="Créer les fichiers de cette couverture (Ctrl+Entrée)">Générer les fichiers</button>
   <button id="b-theme" class="themesw" role="switch" aria-checked="false" title="Passer en thème sombre">
     <svg class="ic sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><g stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg>
     <svg class="ic moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.9 8.9 0 1 0 11.1 11.1z"/></svg>
     <i class="knob"></i>
   </button>
+  <button id="gen-top" class="hgen" title="Créer les fichiers de cette couverture (Ctrl+Entrée)">Générer les fichiers</button>
   <input type="file" id="f-fiche" accept=".json,application/json" class="hide">
 </header>
 <div class="banner hide" id="draft-banner"><span>📝 Une couverture en cours a été retrouvée (<b id="draft-title"></b>). Veux-tu la reprendre ?</span>
@@ -413,6 +425,7 @@
     <div id="msgs"></div>
     <div class="faces" id="faces"></div>
     <div class="hint" style="margin-top:8px">Aperçu en direct. Les fichiers générés sont à la taille réelle du livre.</div>
+    <div class="kbdhelp"><span><span class="kbd">Ctrl</span>+<span class="kbd">S</span> enregistrer</span><span><span class="kbd">Ctrl</span>+<span class="kbd">Entrée</span> générer</span><span><span class="kbd">Ctrl</span>+<span class="kbd">Z</span> annuler</span><span><span class="kbd">Échap</span> fermer</span></div>
   </div>
 </div>
 </main>
@@ -946,6 +959,11 @@ $("rp-dl").onclick = async e => {
   } catch (er) { toast(er.message); }
 };
 $("b-report").onclick = e => { e.preventDefault(); openReport(""); };
+function menuOpen(on){ $("menu").classList.toggle("hide", !on); $("b-menu").setAttribute("aria-expanded", on ? "true" : "false"); }
+$("b-menu").onclick = e => { e.stopPropagation(); menuOpen($("menu").classList.contains("hide")); };
+$("menu").addEventListener("click", e => { if (e.target.closest("button")) menuOpen(false); });
+document.addEventListener("click", e => { if (!e.target.closest(".menuwrap")) menuOpen(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("menu").classList.contains("hide")) { menuOpen(false); $("b-menu").focus(); e.stopPropagation(); } }, true);
 $("msgs").addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-report]"); if (b) { e.preventDefault(); openReport(b.dataset.report); } });
 
 // ---- édition directe par double-clic sur l'aperçu

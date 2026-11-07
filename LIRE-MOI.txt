@@ -15,8 +15,10 @@ Pour ton pere (utilisation)
    A la fin, une fenetre propose "Ouvrir le PowerPoint" et "Ouvrir le dossier".
 Pour quitter : fermer l'onglet. Si la couverture n'est pas enregistree, le navigateur demande confirmation.
 
-Boutons en haut
----------------
+Boutons en haut (v1.0.9)
+------------------------
+En haut : fleches Annuler / Retablir, Enregistrer, interrupteur de theme et "Generer les fichiers". Le menu "Menu" regroupe
+Bibliotheque, Lot Excel, Exemple, Nouvelle couverture, Mises a jour et Signaler un probleme.
 - Ctrl+S : enregistre la couverture dans la bibliotheque.
 - Fleches ↶ ↷ : annuler / retablir la derniere modification (Ctrl+Z / Ctrl+Y quand on n'est pas dans un champ).
 - Nouvelle couverture : vide les champs. Exemple : recharge l'exemple du modele.
@@ -39,7 +41,7 @@ Droit, 4e de couverture : champ "Mention" (italique, sous les auteurs), aussi da
 
 Signaler un probleme
 --------------------
-Lien "Signaler un probleme" en haut. Si la generation echoue, la fenetre s'ouvre toute seule.
+Menu > "Signaler un probleme". Si la generation echoue, la fenetre s'ouvre toute seule.
 - "Envoyer par Gmail" / "par WhatsApp" : un petit fichier .zip (la couverture + le detail de l'erreur) est cree dans
   le dossier "Rapports", copie dans le presse-papiers, et Gmail / WhatsApp s'ouvre avec le message deja ecrit.
   Il suffit de faire Ctrl+V pour joindre le fichier (ou de le glisser depuis le dossier qui s'ouvre).
@@ -83,7 +85,7 @@ Onglet "A plat" : 4e + dos + 1re cote a cote, a la taille exacte de la couvertur
 
 Plusieurs couvertures d'un coup (Lot Excel)
 -------------------------------------------
-Bouton "Lot Excel" en haut. Trois etapes, dans l'ordre :
+Menu > "Lot Excel". Trois etapes, dans l'ordre :
  1. "Creer le modele et l'ouvrir dans Excel" : le fichier est cree dans <dossier de sortie>\Lot Excel\ et
     s'ouvre. Une ligne = un livre. Onglet "Exemples" : deux livres remplis pour s'inspirer. Onglet "Couleurs" :
     les noms de la palette. Onglet "Mode d'emploi" : le detail de chaque colonne. Les titres de colonnes
@@ -103,7 +105,7 @@ Si oui, une fenetre propose "Mettre a jour" / "Plus tard" (case "Ne plus affiche
 jaune en haut de la page continue alors de signaler la nouvelle version).
 Un clic sur "Mettre a jour" telecharge la version, la verifie, remplace le programme et le relance tout seul
 (la page se recharge ; les couvertures et la bibliotheque ne sont pas touchees). Rien ne se fait sans clic.
-En haut de page, "Mises a jour" (a cote du numero de version) verifie a la demande et affiche le resultat dans
+Menu > "Mises a jour" verifie a la demande et affiche le resultat dans
 une fenetre ; la case "M'avertir par une fenetre a chaque lancement" permet de reactiver la fenetre du lancement.
 Le programme doit etre dans un dossier ou l'utilisateur peut ecrire (Bureau, Documents), pas dans "Program Files".
 Si internet est lent, "Annuler" arrete le telechargement ; on peut reessayer plus tard.
