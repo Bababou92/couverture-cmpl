@@ -1,3 +1,4 @@
+Interface plus aeree : espacements des formulaires et des fenetres, section "Fichiers a produire" remise en ordre, fenetre de fin plus lisible (nom du dossier mis en avant).
 Presentation harmonisee avec le catalogue : en-tete allege sur une seule ligne avec un menu (Bibliotheque, Lot Excel, Exemple, Nouvelle couverture, Mises a jour, Signaler un probleme) et rappel des raccourcis clavier sous l'apercu.
 Alerte en haut de la page quand l'ordinateur n'est pas connecte a internet (mises a jour et envoi du rapport impossibles, le reste fonctionne), avec un bouton Reessayer.
 Sauvegardes automatiques datees (les 10 dernieres, dans la fenetre Bibliotheque) pour retrouver un travail en cours perdu ; annuler/retablir et brouillon automatique etaient deja la.

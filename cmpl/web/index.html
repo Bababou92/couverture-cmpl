@@ -232,6 +232,17 @@
   .menu hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
   .kbd{font:12px Consolas,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;background:var(--card);color:var(--ink)}
   .kbdhelp{margin-top:8px;font-size:12.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+  /* v1.0.10 : aération et lisibilité */
+  section{padding:16px 18px}
+  section h2{margin:0 0 14px}
+  label{margin:16px 0 6px}
+  .hint{font-size:12.5px;margin-top:6px}
+  .mhead{padding:16px 22px}.mbody{padding:18px 22px 20px}.mfoot{padding:14px 22px}
+  .radios label{margin:8px 0}
+  .menu a{text-decoration:none}
+  #b-tpl-alt a{color:var(--accent-2)}
+  .donepath{margin:6px 0 0;font-weight:600;word-break:break-word}
+  .donepar{font-size:12.5px;color:var(--muted);word-break:break-all;margin:2px 0 4px}
 </style>
 </head>
 <body>
@@ -337,7 +348,7 @@
       <label>Mention <small>(optionnel, en italique sous les auteurs)</small></label>
       <input type="text" id="mention_4e">
       <div class="row">
-        <div><label>ISBN <small>(le code-barres se fait tout seul)</small></label><input type="text" id="isbn" placeholder="978-2-494268-20-3"><div class="isbn-msg" id="isbnmsg"></div></div>
+        <div><label>ISBN <small>(code-barres automatique)</small></label><input type="text" id="isbn" placeholder="978-2-494268-20-3"><div class="isbn-msg" id="isbnmsg"></div></div>
         <div><label>Slogan</label><input type="text" id="slogan"></div>
       </div>
       <div class="hint">Petites capitales : les majuscules restent grandes, les minuscules deviennent petites (ex. « TOUT ce qu’il faut SAVOIR »).</div>
@@ -401,14 +412,13 @@
     <div class="row" style="gap:8px"><input type="text" id="out_dir"><button class="btn" id="browse" style="flex:0 0 auto">Parcourir…</button></div>
     <label>Nom du livre <small>— nom du dossier créé et des fichiers ; vide = titre</small></label>
     <input type="text" id="fname">
-    <div class="row" style="margin-top:10px;align-items:center">
-      <div class="radios"><label><input type="checkbox" id="w_png" checked> Images PNG (1re, 4e, dos)</label>
-      <label><input type="checkbox" id="w_pptx" checked> PowerPoint (.pptx modifiable)</label>
+    <label>Fichiers à créer</label>
+    <div class="radios"><label><input type="checkbox" id="w_png" checked> Images PNG (1re, 4e, dos)</label>
+      <label><input type="checkbox" id="w_pptx" checked> PowerPoint modifiable (.pptx)</label>
       <label><input type="checkbox" id="w_pdf"> PDF couverture à plat (pour l'imprimeur)</label></div>
-      <div><label style="margin:0 0 4px">Qualité des PNG</label>
-        <select id="dpi"><option value="150">150 dpi (léger)</option><option value="300" selected>300 dpi (impression)</option><option value="600">600 dpi (très haute)</option></select></div>
-    </div>
-    <div class="hint">Le PDF à plat assemble 4e + dos + 1re à la taille exacte de la couverture. Il est visible dans l'onglet « À plat ».</div>
+    <div class="hint">Le PDF à plat assemble 4e + dos + 1re à la taille exacte de la couverture ; il est visible dans l'onglet « À plat ».</div>
+    <label>Qualité des PNG</label>
+    <select id="dpi"><option value="150">150 dpi (léger)</option><option value="300" selected>300 dpi (impression)</option><option value="600">600 dpi (très haute)</option></select>
     <div style="margin-top:14px"><button class="btn primary" id="gen" style="width:100%;padding:11px">Générer les fichiers</button></div>
     <div class="hint" style="margin-top:6px">Un dossier est créé au nom du livre dans le dossier de sortie.</div>
   </section>
@@ -1355,7 +1365,8 @@ async function doGenerate(){
       pdf: $("w_pdf").checked, bleed: 0, marks: false});
     const sep = r.folder.includes("\\") ? "\\" : "/";
     $("d-title").textContent = "✓ Couverture créée";
-    $("d-body").innerHTML = `<div class="hint" style="margin:0">Dans le dossier</div><code class="path">${esc(r.folder)}</code>
+    const parts = r.folder.split(/[\\/]/).filter(Boolean), leaf = parts.pop() || r.folder, parent = r.folder.slice(0, Math.max(0, r.folder.length - leaf.length - 1));
+    $("d-body").innerHTML = `<div class="hint" style="margin:0">Dossier créé</div><div class="donepath">${esc(leaf)}</div><div class="donepar">${esc(parent)}</div>
       <ul class="done-files">${r.files.map(f => `<li>${esc(f.split(/[\\/]/).pop())}</li>`).join("")}</ul>`;
     $("d-foot").classList.remove("hide");
     $("d-pptx").classList.toggle("hide", !r.pptx);
